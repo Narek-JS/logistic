@@ -2,6 +2,10 @@ import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
 import { useEffect } from "react";
 import "react-native-reanimated";
+import CustomSplashScreen from "../components/SplashScreen";
+
+// Prevent the native splash screen from auto-hiding before we are ready.
+SplashScreen.preventAutoHideAsync();
 
 export const unstable_settings = {
   initialRouteName: "welcome",
@@ -9,8 +13,8 @@ export const unstable_settings = {
 
 export default function RootLayout() {
   const [fontsLoading, fontsError] = useFonts({
-    "open-sans-bold": require("./assets/fonts/OpenSans-Bold.ttf"),
-    "open-sans": require("./assets/fonts/OpenSans-Regular.ttf"),
+    "open-sans-bold": require("@/assets/fonts/OpenSans-Bold.ttf"),
+    "open-sans": require("@/assets/fonts/OpenSans-Regular.ttf"),
   });
 
   useEffect(() => {
@@ -20,7 +24,7 @@ export default function RootLayout() {
   }, [fontsLoading, fontsError]);
 
   if (!fontsLoading && !fontsError) {
-    return null;
+    return <CustomSplashScreen />;
   }
 
   return (
