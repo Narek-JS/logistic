@@ -1,21 +1,17 @@
 import BottomSheet, {
   BottomSheetBackdrop,
-  BottomSheetModal,
-  BottomSheetModalProvider,
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
-import { BottomSheetModalMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { useRouter } from "expo-router";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import {
   Image,
   Pressable,
-  StatusBar,
   StyleSheet,
   Text,
   View,
+  TouchableOpacity,
 } from "react-native";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type UserType = "Client" | "Courier";
@@ -25,8 +21,23 @@ export default function WelcomeScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
+  // Bottom sheet ref for programmatic control
   const bottomSheetRef = useRef<BottomSheet>(null);
 
+  // Snap points for the bottom sheet
+  const snapPoints = useMemo(() => ["25%", "50%"], []);
+
+  // Handle bottom sheet changes
+  const handleSheetChanges = useCallback((index: number) => {
+    console.log("Bottom sheet index:", index);
+  }, []);
+
+  // Open bottom sheet
+  const openBottomSheet = useCallback(() => {
+    bottomSheetRef.current?.expand({ damping: 80 });
+  }, []);
+
+  // Navigation handlers
   const handleSignIn = () => {
     router.push("/login");
   };
@@ -35,128 +46,115 @@ export default function WelcomeScreen() {
     router.push("/login");
   };
 
-  useEffect(() => {
-    setTimeout(() => {
-      bottomSheetRef.current?.expand();
-    }, 4000);
-  }, []);
-
+  // Backdrop component
   const renderBackdrop = useCallback(
-    (props: any) => <BottomSheetBackdrop disappearsOnIndex={0} {...props} />,
+    (props: any) => (
+      <BottomSheetBackdrop
+        {...props}
+        disappearsOnIndex={-1}
+        appearsOnIndex={0}
+        opacity={0.5}
+      />
+    ),
     []
   );
 
-  const snapPoints = useMemo(() => ["25%", "50%"], []);
-
-  const [visible, setVisible] = useState(false);
   return (
-    <GestureHandlerRootView>
-      <View style={[styles.container, { backgroundColor: "white" }]}>
-        <StatusBar barStyle="light-content" />
-        <Image
-          source={require("@/assets/images/welcome.png")}
-          style={styles.backgroundImage}
-        />
+    <View style={styles.container}>
+      <Image
+        source={require("@/assets/images/welcome.png")}
+        style={styles.backgroundImage}
+      />
 
-        <Pressable onPress={() => setVisible(!visible)} style={{ margin: 100 }}>
-          <Text>PRess</Text>
-        </Pressable>
-        {/* <BottomSheetModalProvider> */}
-        <BottomSheet
-          onChange={(index) => {
-            console.log("index", index);
-            if (index === -1) {
-              setVisible(false);
-            }
-          }}
-          index={visible ? 0 : -1}
-          backdropComponent={renderBackdrop}
-          snapPoints={snapPoints}
-        >
-          <BottomSheetView style={{ flex: 1 }}>
-            <Text>asdasd</Text>
-            <Text>asdasd</Text>
-            <Text>asdasd</Text>
-            <Text>asdasd</Text>
-          </BottomSheetView>
-        </BottomSheet>
-        {/* </BottomSheetModalProvider> */}
+      <Pressable onPress={openBottomSheet} style={styles.testButton}>
+        <Text style={styles.testButtonText}>Open Bottom Sheet</Text>
+      </Pressable>
 
-        {/* <GestureHandlerRootView style={styles.container}>
-        <BottomSheet ref={bottomSheetRef}>
-          <BottomSheetView
-            style={{
-              flex: 1,
-              padding: 36,
-              alignItems: "center",
-            }}
-          >
-            <Text>Awesome 🎉</Text>
-          </BottomSheetView>
-        </BottomSheet>
-      </GestureHandlerRootView> */}
-
-        {/* <View
-        style={[styles.bottomSheet, { paddingBottom: insets.bottom || 24 }]}
+      <BottomSheet
+        ref={bottomSheetRef}
+        index={0}
+        snapPoints={snapPoints}
+        onChange={handleSheetChanges}
+        backdropComponent={renderBackdrop}
+        enablePanDownToClose={true}
+        enableOverDrag={false}
+        handleIndicatorStyle={styles.handleIndicator}
+        backgroundStyle={styles.bottomSheetBackground}
       >
-        <View style={styles.tabContainer}>
-          <TouchableOpacity
-            style={[styles.tab, selectedType === "Client" && styles.tabActive]}
-            onPress={() => setSelectedType("Client")}
-          >
-            <Text
+        <BottomSheetView
+          style={[
+            styles.bottomSheetContent,
+            { paddingBottom: insets.bottom + 20 },
+          ]}
+        >
+          {/* User Type Selection */}
+          <View style={styles.tabContainer}>
+            <TouchableOpacity
               style={[
-                styles.tabText,
-                selectedType === "Client" && styles.tabTextActive,
+                styles.tab,
+                selectedType === "Client" && styles.tabActive,
               ]}
+              onPress={() => setSelectedType("Client")}
             >
-              Client
-            </Text>
-          </TouchableOpacity>
+              <Text
+                style={[
+                  styles.tabText,
+                  selectedType === "Client" && styles.tabTextActive,
+                ]}
+              >
+                Client
+              </Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity
-            style={[styles.tab, selectedType === "Courier" && styles.tabActive]}
-            onPress={() => setSelectedType("Courier")}
-          >
-            <Text
+            <TouchableOpacity
               style={[
-                styles.tabText,
-                selectedType === "Courier" && styles.tabTextActive,
+                styles.tab,
+                selectedType === "Courier" && styles.tabActive,
               ]}
+              onPress={() => setSelectedType("Courier")}
             >
-              Courier
+              <Text
+                style={[
+                  styles.tabText,
+                  selectedType === "Courier" && styles.tabTextActive,
+                ]}
+              >
+                Courier
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Action Buttons */}
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity
+              disabled={true}
+              style={styles.primaryButton}
+              onPress={handleSignIn}
+              activeOpacity={0.2}
+            >
+              <Text style={styles.primaryButtonText}>Sign In</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.secondaryButton}
+              onPress={handleCreateAccount}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.secondaryButtonText}>Create an account</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Terms and Privacy */}
+          <View style={styles.termsContainer}>
+            <Text style={styles.termsText}>
+              By continuing to use YoLog, you agree to the YoLog{" "}
+              <Text style={styles.termsLink}>terms</Text> and{" "}
+              <Text style={styles.termsLink}>privacy policy</Text>.
             </Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={styles.primaryButton}
-            onPress={handleSignIn}
-            activeOpacity={0.8}
-          >
-            <Text style={styles.primaryButtonText}>Sign In</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.secondaryButton}
-            onPress={handleCreateAccount}
-            activeOpacity={0.8}
-          >
-            <Text style={styles.secondaryButtonText}>Create an account</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.termsContainer}>
-          <Text style={styles.termsText}>
-            By continuing to use YoLog, you agree to the YoLog{" "}
-            <Text style={styles.termsLink}>terms</Text> and{" "}
-            <Text style={styles.termsLink}>privacy policy</Text>.
-          </Text>
-        </View>
-      </View> */}
-      </View>
-    </GestureHandlerRootView>
+          </View>
+        </BottomSheetView>
+      </BottomSheet>
+    </View>
   );
 }
 
@@ -171,16 +169,44 @@ const styles = StyleSheet.create({
     height: "100%",
     resizeMode: "cover",
   },
-  bottomSheet: {
+  testButton: {
     position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
+    top: 100,
+    left: 20,
+    right: 20,
+    backgroundColor: "rgba(255, 255, 255, 0.9)",
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  testButtonText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#000",
+  },
+  bottomSheetBackground: {
     backgroundColor: "#FFFFFF",
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
+  },
+  bottomSheetContent: {
+    flex: 1,
     paddingHorizontal: 24,
-    paddingTop: 32,
+    paddingTop: 16,
+  },
+  handleContainer: {
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  handle: {
+    width: 40,
+    height: 4,
+    backgroundColor: "#E0E0E0",
+    borderRadius: 2,
+  },
+  handleIndicator: {
+    backgroundColor: "#E0E0E0",
   },
   tabContainer: {
     flexDirection: "row",
@@ -191,14 +217,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingBottom: 16,
     borderBottomWidth: 2,
-    borderBottomColor: "transparent", // Inactive state
+    borderBottomColor: "transparent",
   },
   tabActive: {
-    borderBottomColor: "#000000", // Active state
+    borderBottomColor: "#000000",
   },
   tabText: {
     fontSize: 16,
-    color: "#A0A0A0", // Inactive tab text color
+    color: "#A0A0A0",
     fontWeight: "500",
   },
   tabTextActive: {
@@ -210,7 +236,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   primaryButton: {
-    backgroundColor: "#FCE100", // Yellow color from the screenshot
+    backgroundColor: "#FCE100",
     paddingVertical: 16,
     borderRadius: 14,
     alignItems: "center",
@@ -221,7 +247,7 @@ const styles = StyleSheet.create({
     color: "#000",
   },
   secondaryButton: {
-    backgroundColor: "#F3F3F3", // Light grey from the screenshot
+    backgroundColor: "#F3F3F3",
     paddingVertical: 16,
     borderRadius: 14,
     alignItems: "center",
