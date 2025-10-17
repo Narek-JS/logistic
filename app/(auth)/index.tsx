@@ -1,22 +1,18 @@
 import { Colors } from "@/constants/Colors";
+import { useRouter } from "expo-router";
 import { useState } from "react";
-import {
-  Image,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 type UserType = "customer" | "driver";
 
 export default function WelcomeScreen() {
   const [selectedType, setSelectedType] = useState<UserType>("driver");
+  const router = useRouter();
 
   const handleLogin = () => {
     console.log("login");
+    router.navigate("./login");
   };
 
   const handleRegister = () => {
@@ -25,11 +21,9 @@ export default function WelcomeScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" />
-
       <View style={styles.imageContainer}>
         <Image
-          source={require("../assets/images/welcome.png")}
+          source={require("@/assets/images/welcome.png")}
           style={styles.image}
         />
       </View>
