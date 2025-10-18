@@ -1,10 +1,12 @@
-import { useFonts } from "expo-font";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SplashScreen, Stack } from "expo-router";
-import { useEffect } from "react";
-import "react-native-reanimated";
-
 import { useUser } from "@/hooks/useUser";
+import { useFonts } from "expo-font";
+import { useEffect } from "react";
+
 import CustomSplashScreen from "../components/SplashScreen";
+
+import "react-native-reanimated";
 
 // Prevent the native splash screen from auto-hiding before we are ready.
 SplashScreen.preventAutoHideAsync();
@@ -27,16 +29,18 @@ export default function RootLayout() {
   }
 
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Protected guard={!user}>
-        <Stack.Screen name="(auth)" />
-      </Stack.Protected>
-      <Stack.Protected guard={user?.role === "driver"}>
-        <Stack.Screen name="(driver)" />
-      </Stack.Protected>
-      <Stack.Protected guard={user?.role === "client"}>
-        <Stack.Screen name="(client)" />
-      </Stack.Protected>
-    </Stack>
+    <GestureHandlerRootView>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Protected guard={!user}>
+          <Stack.Screen name="(auth)" />
+        </Stack.Protected>
+        <Stack.Protected guard={user?.role === "driver"}>
+          <Stack.Screen name="(driver)" />
+        </Stack.Protected>
+        <Stack.Protected guard={user?.role === "client"}>
+          <Stack.Screen name="(client)" />
+        </Stack.Protected>
+      </Stack>
+    </GestureHandlerRootView>
   );
 }

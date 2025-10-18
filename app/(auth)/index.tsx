@@ -1,207 +1,205 @@
-import { Colors } from "@/constants/Colors";
+import { Image, StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { BottomSheet } from "@/components/shared";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
-type UserType = "customer" | "driver";
+type UserType = "Client" | "Courier";
 
-export default function WelcomeScreen() {
-  const [selectedType, setSelectedType] = useState<UserType>("driver");
+const WelcomeScreen: React.FC = () => {
+  const [selectedType, setSelectedType] = useState<UserType>("Client");
   const router = useRouter();
 
-  const handleLogin = () => {
-    console.log("login");
-    router.navigate("./login");
+  const handleSignIn = () => {
+    router.push("/login");
   };
 
-  const handleRegister = () => {
-    console.log("egister");
+  const handleCreateAccount = () => {
+    router.push("/login");
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.imageContainer}>
-        <Image
-          source={require("@/assets/images/welcome.png")}
-          style={styles.image}
-        />
-      </View>
+    <View style={styles.container}>
+      <Image
+        source={require("@/assets/images/welcome.png")}
+        style={styles.backgroundImage}
+      />
 
-      <View style={styles.bottomCard}>
+      <BottomSheet enablePanDownToClose={false} backdrop={false} index={0}>
         <View style={styles.tabContainer}>
           <TouchableOpacity
-            style={[
-              styles.tab,
-              selectedType === "customer" && styles.tabActive,
-            ]}
-            onPress={() => setSelectedType("customer")}
+            style={[styles.tab, selectedType === "Client" && styles.tabActive]}
+            onPress={() => setSelectedType("Client")}
           >
             <Text
               style={[
                 styles.tabText,
-                selectedType === "customer" && styles.tabTextActive,
+                selectedType === "Client" && styles.tabTextActive,
               ]}
             >
-              customer
+              Client
             </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.tab, selectedType === "driver" && styles.tabActive]}
-            onPress={() => setSelectedType("driver")}
+            style={[styles.tab, selectedType === "Courier" && styles.tabActive]}
+            onPress={() => setSelectedType("Courier")}
           >
             <Text
               style={[
                 styles.tabText,
-                selectedType === "driver" && styles.tabTextActive,
+                selectedType === "Courier" && styles.tabTextActive,
               ]}
             >
-              driver
+              Courier
             </Text>
           </TouchableOpacity>
         </View>
 
+        {/* Action Buttons */}
         <View style={styles.buttonContainer}>
           <TouchableOpacity
             style={styles.primaryButton}
-            onPress={handleLogin}
-            activeOpacity={0.8}
+            onPress={handleSignIn}
+            activeOpacity={0.2}
+            disabled={true}
           >
-            <Text style={styles.primaryButtonText}>Login</Text>
+            <Text style={styles.primaryButtonText}>Sign In</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.secondaryButton}
-            onPress={handleRegister}
+            onPress={handleCreateAccount}
             activeOpacity={0.8}
           >
-            <Text style={styles.secondaryButtonText}>Create Account</Text>
+            <Text style={styles.secondaryButtonText}>Create an account</Text>
           </TouchableOpacity>
         </View>
 
         {/* Terms and Privacy */}
         <View style={styles.termsContainer}>
           <Text style={styles.termsText}>
-            Terms of Service YoLog <Text style={styles.termsLink}>terms</Text>
-            and <Text style={styles.termsLink}>privacyPolicy</Text>.
+            By continuing to use YoLog, you agree to the YoLog{" "}
+            <Text style={styles.termsLink}>terms</Text> and{" "}
+            <Text style={styles.termsLink}>privacy policy</Text>.
           </Text>
         </View>
-      </View>
-    </SafeAreaView>
+      </BottomSheet>
+    </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: "red",
+    backgroundColor: "#000",
   },
-  imageContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    height: "100%",
-    width: "100%",
-  },
-  image: {
+  backgroundImage: {
+    ...StyleSheet.absoluteFillObject,
     width: "100%",
     height: "100%",
     resizeMode: "cover",
   },
-  bottomCard: {
+  testButton: {
+    position: "absolute",
+    top: 100,
+    left: 20,
+    right: 20,
+    backgroundColor: "rgba(255, 255, 255, 0.9)",
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  testButtonText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#000",
+  },
+  bottomSheetBackground: {
     backgroundColor: "#FFFFFF",
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+  },
+  bottomSheetContent: {
+    flex: 1,
     paddingHorizontal: 24,
-    paddingTop: 32,
-    paddingBottom: 40,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: -4,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 10,
+    paddingTop: 16,
+  },
+  handleContainer: {
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  handle: {
+    width: 40,
+    height: 4,
+    backgroundColor: "#E0E0E0",
+    borderRadius: 2,
+  },
+  handleIndicator: {
+    backgroundColor: "#7878801F",
   },
   tabContainer: {
     flexDirection: "row",
-    borderRadius: 8,
-    padding: 4,
     marginBottom: 32,
   },
   tab: {
     flex: 1,
-    paddingVertical: 12,
     alignItems: "center",
-    borderRadius: 6,
+    paddingBottom: 16,
+    borderBottomWidth: 2,
+    borderBottomColor: "transparent",
   },
   tabActive: {
-    backgroundColor: "#FFFFFF",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    borderBottomColor: "#000000",
   },
   tabText: {
     fontSize: 16,
-    fontWeight: "600",
-    color: "#666",
+    color: "#A0A0A0",
+    fontWeight: "500",
   },
   tabTextActive: {
-    color: "#000",
+    color: "#000000",
+    fontWeight: "600",
   },
   buttonContainer: {
     gap: 16,
     marginBottom: 24,
   },
   primaryButton: {
-    backgroundColor: Colors.primary,
+    backgroundColor: "#FCE100",
     paddingVertical: 16,
-    borderRadius: 12,
+    borderRadius: 14,
     alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
   },
   primaryButtonText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "700",
     color: "#000",
   },
   secondaryButton: {
-    backgroundColor: "#F0F0F0",
+    backgroundColor: "#F3F3F3",
     paddingVertical: 16,
-    borderRadius: 12,
+    borderRadius: 14,
     alignItems: "center",
   },
   secondaryButtonText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "600",
     color: "#000",
   },
   termsContainer: {
     alignItems: "center",
-    paddingHorizontal: 8,
   },
   termsText: {
     fontSize: 12,
-    color: "#999",
+    color: "#A0A0A0",
     textAlign: "center",
     lineHeight: 18,
   },
   termsLink: {
     color: "#000",
-    textDecorationLine: "underline",
+    fontWeight: "600",
   },
 });
+
+export default WelcomeScreen;
