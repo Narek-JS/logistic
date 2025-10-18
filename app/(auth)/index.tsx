@@ -25,7 +25,7 @@ export default function WelcomeScreen() {
   const bottomSheetRef = useRef<BottomSheet>(null);
 
   // Snap points for the bottom sheet
-  const snapPoints = useMemo(() => ["25%", "50%"], []);
+  const snapPoints = useMemo(() => ["50%"], []);
 
   // Handle bottom sheet changes
   const handleSheetChanges = useCallback((index: number) => {
@@ -34,7 +34,8 @@ export default function WelcomeScreen() {
 
   // Open bottom sheet
   const openBottomSheet = useCallback(() => {
-    bottomSheetRef.current?.expand({ damping: 80 });
+    bottomSheetRef.current?.collapse();
+    // bottomSheetRef.current?.expand({ damping: 800 });
   }, []);
 
   // Navigation handlers
@@ -72,23 +73,19 @@ export default function WelcomeScreen() {
 
       <BottomSheet
         ref={bottomSheetRef}
-        index={0}
+        index={-1}
         snapPoints={snapPoints}
         onChange={handleSheetChanges}
         backdropComponent={renderBackdrop}
         enablePanDownToClose={true}
-        enableOverDrag={false}
         handleIndicatorStyle={styles.handleIndicator}
         backgroundStyle={styles.bottomSheetBackground}
+        enableDynamicSizing={false}
       >
-        <BottomSheetView
-          style={[
-            styles.bottomSheetContent,
-            { paddingBottom: insets.bottom + 20 },
-          ]}
-        >
+        <BottomSheetView style={[styles.bottomSheetContent]}>
+          <Text>Text</Text>
           {/* User Type Selection */}
-          <View style={styles.tabContainer}>
+          {/* <View style={styles.tabContainer}>
             <TouchableOpacity
               style={[
                 styles.tab,
@@ -122,10 +119,10 @@ export default function WelcomeScreen() {
                 Courier
               </Text>
             </TouchableOpacity>
-          </View>
+          </View> */}
 
           {/* Action Buttons */}
-          <View style={styles.buttonContainer}>
+          {/* <View style={styles.buttonContainer}>
             <TouchableOpacity
               disabled={true}
               style={styles.primaryButton}
@@ -142,16 +139,16 @@ export default function WelcomeScreen() {
             >
               <Text style={styles.secondaryButtonText}>Create an account</Text>
             </TouchableOpacity>
-          </View>
+          </View> */}
 
           {/* Terms and Privacy */}
-          <View style={styles.termsContainer}>
+          {/* <View style={styles.termsContainer}>
             <Text style={styles.termsText}>
               By continuing to use YoLog, you agree to the YoLog{" "}
               <Text style={styles.termsLink}>terms</Text> and{" "}
               <Text style={styles.termsLink}>privacy policy</Text>.
             </Text>
-          </View>
+          </View> */}
         </BottomSheetView>
       </BottomSheet>
     </View>
