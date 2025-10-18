@@ -1,11 +1,10 @@
 import BottomSheet, {
-  BottomSheetView,
-  BottomSheetProps,
   BottomSheetBackdrop,
+  BottomSheetProps,
+  BottomSheetView,
 } from "@gorhom/bottom-sheet";
-
-import React, { useCallback } from "react";
 import { StyleSheet } from "react-native";
+import { useCallback } from "react";
 
 interface CustomBottomSheetProps extends Omit<BottomSheetProps, "children"> {
   children: React.ReactNode;
@@ -13,7 +12,7 @@ interface CustomBottomSheetProps extends Omit<BottomSheetProps, "children"> {
   viewProps?: React.ComponentProps<typeof BottomSheetView>;
 }
 
-const CustomBottomSheet: React.FC<CustomBottomSheetProps | any> = ({
+const CustomBottomSheet: React.FC<CustomBottomSheetProps> = ({
   children,
   viewProps,
   ...props

@@ -5,7 +5,7 @@ import { useState } from "react";
 
 type UserType = "Client" | "Courier";
 
-export default function WelcomeScreen() {
+const WelcomeScreen: React.FC = () => {
   const [selectedType, setSelectedType] = useState<UserType>("Client");
   const router = useRouter();
 
@@ -24,7 +24,7 @@ export default function WelcomeScreen() {
         style={styles.backgroundImage}
       />
 
-      <BottomSheet index={0} backdrop={false} enablePanDownToClose={false}>
+      <BottomSheet enablePanDownToClose={false} backdrop={false} index={0}>
         <View style={styles.tabContainer}>
           <TouchableOpacity
             style={[styles.tab, selectedType === "Client" && styles.tabActive]}
@@ -58,10 +58,10 @@ export default function WelcomeScreen() {
         {/* Action Buttons */}
         <View style={styles.buttonContainer}>
           <TouchableOpacity
-            disabled={true}
             style={styles.primaryButton}
             onPress={handleSignIn}
             activeOpacity={0.2}
+            disabled={true}
           >
             <Text style={styles.primaryButtonText}>Sign In</Text>
           </TouchableOpacity>
@@ -86,7 +86,7 @@ export default function WelcomeScreen() {
       </BottomSheet>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -201,3 +201,5 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
 });
+
+export default WelcomeScreen;

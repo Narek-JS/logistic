@@ -1,9 +1,8 @@
-import { useLocale } from "@/hooks/useLocal";
-import React from "react";
 import { Image, ImageBackground, StyleSheet, View } from "react-native";
+import { useLocale } from "@/hooks/useLocal";
 import { Text } from "../ui";
 
-const SplashScreen = () => {
+const SplashScreen: React.FC = () => {
   const { t } = useLocale();
 
   return (
@@ -25,8 +24,6 @@ const SplashScreen = () => {
     </ImageBackground>
   );
 };
-
-export default SplashScreen;
 
 const styles = StyleSheet.create({
   backgroundImage: {
@@ -54,3 +51,5 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
+
+export default SplashScreen;
