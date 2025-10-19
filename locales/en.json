@@ -1,6 +1,11 @@
 {
   "welcome": "Welcome to my App!",
   "appName": "Logistic",
+  "courier": "Courier",
+  "client": "Client",
+  "sign_in": "Sign In",
+  "sign_up": "Sign Up",
+  "createAccount": "Create an account",
   "home": {
     "title": "This is the Home Screen"
   }

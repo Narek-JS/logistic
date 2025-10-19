@@ -1,21 +1,23 @@
-import { Image, StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { Image, StyleSheet, View, TouchableOpacity } from "react-native";
+import { ButtonPrimary, ButtonSecondary } from "@/components/ui/Buttons";
+import { TermsAndPrivacy } from "@/components/TermsAndPrivacy";
 import { BottomSheet } from "@/components/shared";
+import { useLocale } from "@/hooks/useLocal";
+import { Colors } from "@/constants/Colors";
 import { useRouter } from "expo-router";
+import { Text } from "@/components/ui";
 import { useState } from "react";
 
-type UserType = "Client" | "Courier";
+type UserType = "client" | "courier";
 
 const WelcomeScreen: React.FC = () => {
-  const [selectedType, setSelectedType] = useState<UserType>("Client");
+  const [type, setType] = useState<UserType>("client");
+  const { t } = useLocale();
   const router = useRouter();
 
-  const handleSignIn = () => {
-    router.push("/login");
-  };
+  const handleSignIn = () => router.push("/login");
 
-  const handleCreateAccount = () => {
-    router.push("/login");
-  };
+  const handleSignUp = () => router.push("/login");
 
   return (
     <View style={styles.container}>
@@ -25,63 +27,49 @@ const WelcomeScreen: React.FC = () => {
       />
 
       <BottomSheet enablePanDownToClose={false} backdrop={false} index={0}>
-        <View style={styles.tabContainer}>
-          <TouchableOpacity
-            style={[styles.tab, selectedType === "Client" && styles.tabActive]}
-            onPress={() => setSelectedType("Client")}
-          >
-            <Text
-              style={[
-                styles.tabText,
-                selectedType === "Client" && styles.tabTextActive,
-              ]}
+        <View style={styles.bottomSheetContent}>
+          {/* Tab Buttons */}
+          <View style={styles.tabContainer}>
+            <TouchableOpacity
+              style={[styles.tab, type === "client" && styles.tabActive]}
+              onPress={() => setType("client")}
             >
-              Client
-            </Text>
-          </TouchableOpacity>
+              <Text
+                style={[
+                  type === "client" && styles.tabTextActive,
+                  styles.tabText,
+                ]}
+              >
+                {t("client")}
+              </Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity
-            style={[styles.tab, selectedType === "Courier" && styles.tabActive]}
-            onPress={() => setSelectedType("Courier")}
-          >
-            <Text
-              style={[
-                styles.tabText,
-                selectedType === "Courier" && styles.tabTextActive,
-              ]}
+            <TouchableOpacity
+              style={[type === "courier" && styles.tabActive, styles.tab]}
+              onPress={() => setType("courier")}
             >
-              Courier
-            </Text>
-          </TouchableOpacity>
-        </View>
+              <Text
+                style={[
+                  styles.tabText,
+                  type === "courier" && styles.tabTextActive,
+                ]}
+              >
+                {t("courier")}
+              </Text>
+            </TouchableOpacity>
+          </View>
 
-        {/* Action Buttons */}
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={styles.primaryButton}
-            onPress={handleSignIn}
-            activeOpacity={0.2}
-            disabled={true}
-          >
-            <Text style={styles.primaryButtonText}>Sign In</Text>
-          </TouchableOpacity>
+          {/* Action Buttons */}
+          <View style={styles.buttonContainer}>
+            <ButtonPrimary title={t("sign_in")} onPress={handleSignIn} />
+            <ButtonSecondary
+              title={t("createAccount")}
+              onPress={handleSignUp}
+            />
+          </View>
 
-          <TouchableOpacity
-            style={styles.secondaryButton}
-            onPress={handleCreateAccount}
-            activeOpacity={0.8}
-          >
-            <Text style={styles.secondaryButtonText}>Create an account</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Terms and Privacy */}
-        <View style={styles.termsContainer}>
-          <Text style={styles.termsText}>
-            By continuing to use YoLog, you agree to the YoLog{" "}
-            <Text style={styles.termsLink}>terms</Text> and{" "}
-            <Text style={styles.termsLink}>privacy policy</Text>.
-          </Text>
+          {/* Terms and Privacy */}
+          <TermsAndPrivacy />
         </View>
       </BottomSheet>
     </View>
@@ -99,6 +87,7 @@ const styles = StyleSheet.create({
     height: "100%",
     resizeMode: "cover",
   },
+
   testButton: {
     position: "absolute",
     top: 100,
@@ -122,8 +111,9 @@ const styles = StyleSheet.create({
   },
   bottomSheetContent: {
     flex: 1,
-    paddingHorizontal: 24,
-    paddingTop: 16,
+    gap: 24,
+    paddingHorizontal: 16,
+    paddingTop: 8,
   },
   handleContainer: {
     alignItems: "center",
@@ -146,15 +136,15 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     paddingBottom: 16,
-    borderBottomWidth: 2,
-    borderBottomColor: "transparent",
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.secondary,
   },
   tabActive: {
     borderBottomColor: "#000000",
   },
   tabText: {
     fontSize: 16,
-    color: "#A0A0A0",
+    color: "#000000",
     fontWeight: "500",
   },
   tabTextActive: {

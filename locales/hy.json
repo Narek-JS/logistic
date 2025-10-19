@@ -1,6 +1,8 @@
 {
   "welcome": "Բարի գալուստ իմ հավելված",
   "appName": "Logistic",
+  "courier": "Վարորդ",
+  "client": "Հաճախորդ",
   "home": {
     "title": "Սա Գլխավոր Էկրանն է"
   }
