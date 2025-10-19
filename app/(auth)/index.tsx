@@ -60,11 +60,10 @@ const WelcomeScreen: React.FC = () => {
 
           {/* Action Buttons */}
           <View style={styles.buttonContainer}>
-            <ButtonPrimary title={t("sign_in")} onPress={handleSignIn} />
-            <ButtonSecondary
-              title={t("createAccount")}
-              onPress={handleSignUp}
-            />
+            <ButtonPrimary onPress={handleSignIn}>{t("sign_in")}</ButtonPrimary>
+            <ButtonSecondary onPress={handleSignUp}>
+              {t("createAccount")}
+            </ButtonSecondary>
           </View>
 
           {/* Terms and Privacy */}

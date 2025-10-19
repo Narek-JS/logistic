@@ -12,14 +12,13 @@ import { Text } from "@/components/ui";
 interface ButtonSecondaryProps extends TouchableOpacityProps {
   textStyle?: StyleProp<TextStyle>;
   textProps?: TextProps;
-  title: string;
 }
 
 const ButtonSecondary: React.FC<ButtonSecondaryProps> = ({
-  title,
   style,
   textStyle,
   textProps,
+  children,
   ...touchableOpacityProps
 }) => {
   return (
@@ -29,7 +28,7 @@ const ButtonSecondary: React.FC<ButtonSecondaryProps> = ({
       {...touchableOpacityProps}
     >
       <Text style={[styles.secondaryButtonText, textStyle]} {...textProps}>
-        {title}
+        {children}
       </Text>
     </TouchableOpacity>
   );

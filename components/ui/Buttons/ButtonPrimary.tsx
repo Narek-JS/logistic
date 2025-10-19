@@ -12,14 +12,13 @@ import { Text } from "@/components/ui";
 interface ButtonPrimaryProps extends TouchableOpacityProps {
   textStyle?: StyleProp<TextStyle>;
   textProps?: TextProps;
-  title: string;
 }
 
 const ButtonPrimary: React.FC<ButtonPrimaryProps> = ({
-  title,
   style,
   textStyle,
   textProps,
+  children,
   ...touchableOpacityProps
 }) => {
   return (
@@ -29,7 +28,7 @@ const ButtonPrimary: React.FC<ButtonPrimaryProps> = ({
       {...touchableOpacityProps}
     >
       <Text style={[styles.primaryButtonText, textStyle]} {...textProps}>
-        {title}
+        {children}
       </Text>
     </TouchableOpacity>
   );
