@@ -16,7 +16,6 @@ const WelcomeScreen: React.FC = () => {
   const router = useRouter();
 
   const handleSignIn = () => router.push("/login");
-
   const handleSignUp = () => router.push("/login");
 
   return (
@@ -87,50 +86,14 @@ const styles = StyleSheet.create({
     height: "100%",
     resizeMode: "cover",
   },
-
-  testButton: {
-    position: "absolute",
-    top: 100,
-    left: 20,
-    right: 20,
-    backgroundColor: "rgba(255, 255, 255, 0.9)",
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    alignItems: "center",
-  },
-  testButtonText: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#000",
-  },
-  bottomSheetBackground: {
-    backgroundColor: "#FFFFFF",
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-  },
   bottomSheetContent: {
     flex: 1,
-    gap: 24,
+    gap: 48,
     paddingHorizontal: 16,
     paddingTop: 8,
   },
-  handleContainer: {
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  handle: {
-    width: 40,
-    height: 4,
-    backgroundColor: "#E0E0E0",
-    borderRadius: 2,
-  },
-  handleIndicator: {
-    backgroundColor: "#7878801F",
-  },
   tabContainer: {
     flexDirection: "row",
-    marginBottom: 32,
   },
   tab: {
     flex: 1,
@@ -153,42 +116,6 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     gap: 16,
-    marginBottom: 24,
-  },
-  primaryButton: {
-    backgroundColor: "#FCE100",
-    paddingVertical: 16,
-    borderRadius: 14,
-    alignItems: "center",
-  },
-  primaryButtonText: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#000",
-  },
-  secondaryButton: {
-    backgroundColor: "#F3F3F3",
-    paddingVertical: 16,
-    borderRadius: 14,
-    alignItems: "center",
-  },
-  secondaryButtonText: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#000",
-  },
-  termsContainer: {
-    alignItems: "center",
-  },
-  termsText: {
-    fontSize: 12,
-    color: "#A0A0A0",
-    textAlign: "center",
-    lineHeight: 18,
-  },
-  termsLink: {
-    color: "#000",
-    fontWeight: "600",
   },
 });
 

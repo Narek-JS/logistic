@@ -33,7 +33,7 @@ const CustomBottomSheet: React.FC<CustomBottomSheetProps> = ({
     <BottomSheet
       index={0}
       enableDynamicSizing={false}
-      snapPoints={props.snapPoints || ["50%"]}
+      snapPoints={props.snapPoints || ["45%"]}
       backgroundStyle={props.backgroundStyle || styles.bottomSheetBackground}
       enablePanDownToClose={
         props.enablePanDownToClose === undefined
