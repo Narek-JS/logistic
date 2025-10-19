@@ -44,7 +44,7 @@ const WelcomeScreen: React.FC = () => {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[type === "courier" && styles.tabActive, styles.tab]}
+              style={[styles.tab, type === "courier" && styles.tabActive]}
               onPress={() => setType("courier")}
             >
               <Text
