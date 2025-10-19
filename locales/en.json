@@ -8,5 +8,12 @@
   "createAccount": "Create an account",
   "home": {
     "title": "This is the Home Screen"
+  },
+  "terms": {
+    "agreement": "By continuing to use YoLog, you agree to the YoLog",
+    "terms": "terms",
+    "and": "and",
+    "privacyPolicy": "privacy policy",
+    "period": "."
   }
 }

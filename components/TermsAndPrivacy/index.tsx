@@ -1,13 +1,18 @@
-import { Colors } from "@/constants/Colors";
 import { View, Text, StyleSheet } from "react-native";
+import { useLocale } from "@/hooks/useLocal";
+import { Colors } from "@/constants/Colors";
 
 const TermsAndPrivacy: React.FC = () => {
+  const { t } = useLocale();
+
   return (
     <View style={styles.termsContainer}>
       <Text style={styles.termsText}>
-        By continuing to use YoLog, you agree to the YoLog{" "}
-        <Text style={styles.termsLink}>terms</Text> and{" "}
-        <Text style={styles.termsLink}>privacy policy</Text>.
+        {t("terms.agreement")}{" "}
+        <Text style={styles.termsLink}>{t("terms.terms")}</Text>{" "}
+        {t("terms.and")}{" "}
+        <Text style={styles.termsLink}>{t("terms.privacyPolicy")}</Text>
+        {t("terms.period")}
       </Text>
     </View>
   );
