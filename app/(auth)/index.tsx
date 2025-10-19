@@ -68,7 +68,10 @@ const WelcomeScreen: React.FC = () => {
           </View>
 
           {/* Terms and Privacy */}
-          <TermsAndPrivacy />
+          <TermsAndPrivacy
+            termsCallback={() => console.log("Terms Pressed")}
+            privacyCallback={() => console.log("Privacy Pressed")}
+          />
         </View>
       </BottomSheet>
     </View>
