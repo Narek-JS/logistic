@@ -17,6 +17,7 @@ export default function RootLayout() {
     "open-sans": require("@/assets/fonts/OpenSans-Regular.ttf"),
   });
   const user = useUser();
+  const isLoggedIn = user?.role !== null && user?.role !== undefined;
 
   useEffect(() => {
     if (fontsLoading || fontsError) {
@@ -30,15 +31,17 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Protected guard={!user}>
-          <Stack.Screen name="(auth)" />
+      <Stack>
+        <Stack.Protected guard={isLoggedIn && user?.role === "client"}>
+          <Stack.Screen name="(client)" options={{ headerShown: false }} />
         </Stack.Protected>
-        <Stack.Protected guard={user?.role === "driver"}>
-          <Stack.Screen name="(driver)" />
+
+        <Stack.Protected guard={isLoggedIn && user?.role === "driver"}>
+          <Stack.Screen name="(driver)" options={{ headerShown: false }} />
         </Stack.Protected>
-        <Stack.Protected guard={user?.role === "client"}>
-          <Stack.Screen name="(client)" />
+
+        <Stack.Protected guard={!isLoggedIn}>
+          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         </Stack.Protected>
       </Stack>
     </GestureHandlerRootView>
