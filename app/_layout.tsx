@@ -1,6 +1,8 @@
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SplashScreen, Stack } from "expo-router";
 import { useUser } from "@/hooks/useUser";
+import { Provider } from "react-redux";
+import { store } from "@/store/store";
 import { useFonts } from "expo-font";
 import { useEffect } from "react";
 
@@ -30,20 +32,22 @@ export default function RootLayout() {
   }
 
   return (
-    <GestureHandlerRootView>
-      <Stack>
-        <Stack.Protected guard={isLoggedIn && user?.role === "client"}>
-          <Stack.Screen name="(client)" options={{ headerShown: false }} />
-        </Stack.Protected>
+    <Provider store={store}>
+      <GestureHandlerRootView>
+        <Stack>
+          <Stack.Protected guard={isLoggedIn && user?.role === "client"}>
+            <Stack.Screen name="(client)" options={{ headerShown: false }} />
+          </Stack.Protected>
 
-        <Stack.Protected guard={isLoggedIn && user?.role === "driver"}>
-          <Stack.Screen name="(driver)" options={{ headerShown: false }} />
-        </Stack.Protected>
+          <Stack.Protected guard={isLoggedIn && user?.role === "driver"}>
+            <Stack.Screen name="(driver)" options={{ headerShown: false }} />
+          </Stack.Protected>
 
-        <Stack.Protected guard={!isLoggedIn}>
-          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-        </Stack.Protected>
-      </Stack>
-    </GestureHandlerRootView>
+          <Stack.Protected guard={!isLoggedIn}>
+            <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+          </Stack.Protected>
+        </Stack>
+      </GestureHandlerRootView>
+    </Provider>
   );
 }

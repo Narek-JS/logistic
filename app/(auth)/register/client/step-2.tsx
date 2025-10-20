@@ -1,8 +1,14 @@
+import { selectToken } from "@/store/auth/selectors";
 import { View, Text, Button } from "react-native";
+import { useAppSelector } from "@/store/hooks";
 import { useRouter } from "expo-router";
 
 export default function ClientRegStep2() {
   const router = useRouter();
+  const token = useAppSelector(selectToken);
+
+  console.log("token in step 2", token);
+
   return (
     <View
       style={{
