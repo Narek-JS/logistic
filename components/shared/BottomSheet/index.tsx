@@ -3,18 +3,21 @@ import BottomSheet, {
   BottomSheetProps,
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
+import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { StyleSheet } from "react-native";
 import { useCallback } from "react";
 
-interface CustomBottomSheetProps extends Omit<BottomSheetProps, "children"> {
+export interface CustomBottomSheetProps
+  extends Omit<BottomSheetProps, "children"> {
+  viewProps?: React.ComponentProps<typeof BottomSheetView>;
+  ref?: React.Ref<BottomSheetMethods>;
   children: React.ReactNode;
   backdrop?: boolean;
-  viewProps?: React.ComponentProps<typeof BottomSheetView>;
 }
 
 const CustomBottomSheet: React.FC<CustomBottomSheetProps> = ({
-  children,
   viewProps,
+  children,
   ...props
 }) => {
   const renderBackdrop = useCallback(
