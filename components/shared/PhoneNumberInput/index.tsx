@@ -31,10 +31,10 @@ const countryData = [
 ];
 
 const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
-  placeholder = "055 555 555",
   selectedCountryCode = "US",
   onCountryCodePress,
   disabled = false,
+  placeholder,
   onChange,
   error,
   value,

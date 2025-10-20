@@ -1,9 +1,9 @@
 import {
-  StyleSheet,
-  View,
   TouchableOpacity,
-  FlatList,
+  StyleSheet,
   ScrollView,
+  FlatList,
+  View,
 } from "react-native";
 import { ButtonPrimary, ButtonSecondary } from "@/components/ui/Buttons";
 import { PhoneNumberInput, BottomSheet } from "@/components/shared";
@@ -13,7 +13,6 @@ import { Colors } from "@/constants/Colors";
 import { useState, useRef } from "react";
 import { Text } from "@/components/ui";
 
-// Country data for BottomSheet
 const countryData = [
   { code: "GB", name: "United Kingdom", flag: "🇬🇧", phoneCode: "+44" },
   { code: "US", name: "United States", flag: "🇺🇸", phoneCode: "+1" },
@@ -41,12 +40,10 @@ export default function ClientPhoneStep() {
 
   const handleSend = () => {
     if (!canContinue) return;
-    // Navigate to next step
     router.push("/(auth)/register/client/step-2");
   };
 
   const handleYoPhone = () => {
-    // Handle YoPhone integration
     console.log("YoPhone integration");
   };
 
@@ -81,11 +78,10 @@ export default function ClientPhoneStep() {
         }}
       />
       <ScrollView
-        style={styles.container}
         contentContainerStyle={styles.content}
+        style={styles.container}
       >
-        {/* Top Group */}
-        <View>
+        <View style={{ gap: 5 }}>
           <PhoneNumberInput
             onCountryCodePress={handleOpenBottomSheet}
             selectedCountryCode={selectedCountryCode}
@@ -102,8 +98,7 @@ export default function ClientPhoneStep() {
           </ButtonPrimary>
         </View>
 
-        {/* Bottom Group (with original gap applied) */}
-        <View style={{ gap: 16 }}>
+        <View style={{ gap: 16, marginBottom: 24 }}>
           <ButtonSecondary style={styles.yoPhoneButton} onPress={handleYoPhone}>
             <Text style={styles.yoText}>yo</Text>{" "}
             <Text>Continue with YoPhone</Text>
@@ -115,7 +110,6 @@ export default function ClientPhoneStep() {
         </View>
       </ScrollView>
 
-      {/* Country Selection BottomSheet */}
       <BottomSheet
         onClose={() => setBottomSheetVisible(false)}
         index={bottomSheetVisible ? 0 : -1}
