@@ -15,19 +15,28 @@ export interface PhoneNumberInputProps {
   style?: any;
 }
 
-const countryData = [
+export const countryData = [
   { code: "GB", name: "United Kingdom", flag: "🇬🇧", phoneCode: "+44" },
   { code: "US", name: "United States", flag: "🇺🇸", phoneCode: "+1" },
+  { code: "ZA", name: "South Africa", flag: "🇿🇦", phoneCode: "+27" },
   { code: "AU", name: "Australia", flag: "🇦🇺", phoneCode: "+61" },
+  { code: "AR", name: "Argentina", flag: "🇦🇷", phoneCode: "+54" },
   { code: "AM", name: "Armenia", flag: "🇦🇲", phoneCode: "+374" },
+  { code: "NG", name: "Nigeria", flag: "🇳🇬", phoneCode: "+234" },
+  { code: "CO", name: "Colombia", flag: "🇨🇴", phoneCode: "+57" },
   { code: "DE", name: "Germany", flag: "🇩🇪", phoneCode: "+49" },
   { code: "FR", name: "France", flag: "🇫🇷", phoneCode: "+33" },
   { code: "BR", name: "Brazil", flag: "🇧🇷", phoneCode: "+55" },
+  { code: "MX", name: "Mexico", flag: "🇲🇽", phoneCode: "+52" },
+  { code: "KE", name: "Kenya", flag: "🇰🇪", phoneCode: "+254" },
   { code: "RU", name: "Russia", flag: "🇷🇺", phoneCode: "+7" },
   { code: "CA", name: "Canada", flag: "🇨🇦", phoneCode: "+1" },
   { code: "JP", name: "Japan", flag: "🇯🇵", phoneCode: "+81" },
   { code: "CN", name: "China", flag: "🇨🇳", phoneCode: "+86" },
   { code: "IN", name: "India", flag: "🇮🇳", phoneCode: "+91" },
+  { code: "EG", name: "Egypt", flag: "🇪🇬", phoneCode: "+20" },
+  { code: "CL", name: "Chile", flag: "🇨🇱", phoneCode: "+56" },
+  { code: "PE", name: "Peru", flag: "🇵🇪", phoneCode: "+51" },
 ];
 
 const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
