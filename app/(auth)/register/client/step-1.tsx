@@ -8,6 +8,7 @@ import { Stack, useRouter } from "expo-router";
 import { Colors } from "@/constants/Colors";
 import { useState, useRef } from "react";
 import { Text } from "@/components/ui";
+import { FontAwesome } from "@expo/vector-icons";
 
 type CountryOption = {
   phoneCode: string;
@@ -60,7 +61,11 @@ export default function ClientPhoneStep() {
       <Stack.Screen
         options={{
           headerRight: () => <Text style={styles.stepIndicator}>1/2</Text>,
-          headerLeft: () => <Text style={styles.stepIndicator}>back</Text>,
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => router.back()}>
+              <FontAwesome name="chevron-left" size={16} />
+            </TouchableOpacity>
+          ),
           title: "Client Phone Verification",
           headerShown: true,
         }}
