@@ -4,11 +4,11 @@ import { PhoneNumberInput, BottomSheet } from "@/components/shared";
 import { countryData } from "@/components/shared/PhoneNumberInput";
 import { TermsAndPrivacy } from "@/components/TermsAndPrivacy";
 import { BottomSheetFlatList } from "@gorhom/bottom-sheet";
+import { FontAwesome } from "@expo/vector-icons";
 import { Stack, useRouter } from "expo-router";
 import { Colors } from "@/constants/Colors";
 import { useState, useRef } from "react";
 import { Text } from "@/components/ui";
-import { FontAwesome } from "@expo/vector-icons";
 
 type CountryOption = {
   phoneCode: string;
@@ -113,8 +113,8 @@ export default function ClientPhoneStep() {
         index={bottomSheetVisible ? 1 : -1}
         enablePanDownToClose={true}
         ref={bottomSheetRef}
-        snapPoints={["60%", "90%"]}
-        backdrop={true}
+        snapPoints={["60%"]}
+        useModal={true}
         asScrollable
       >
         <BottomSheetFlatList<CountryOption>

@@ -1,4 +1,5 @@
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { SplashScreen, Stack } from "expo-router";
 import { useUser } from "@/hooks/useUser";
 import { Provider } from "react-redux";
@@ -34,19 +35,21 @@ export default function RootLayout() {
   return (
     <Provider store={store}>
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <Stack>
-          <Stack.Protected guard={isLoggedIn && user?.role === "client"}>
-            <Stack.Screen name="(client)" options={{ headerShown: false }} />
-          </Stack.Protected>
+        <BottomSheetModalProvider>
+          <Stack>
+            <Stack.Protected guard={isLoggedIn && user?.role === "client"}>
+              <Stack.Screen name="(client)" options={{ headerShown: false }} />
+            </Stack.Protected>
 
-          <Stack.Protected guard={isLoggedIn && user?.role === "driver"}>
-            <Stack.Screen name="(driver)" options={{ headerShown: false }} />
-          </Stack.Protected>
+            <Stack.Protected guard={isLoggedIn && user?.role === "driver"}>
+              <Stack.Screen name="(driver)" options={{ headerShown: false }} />
+            </Stack.Protected>
 
-          <Stack.Protected guard={!isLoggedIn}>
-            <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-          </Stack.Protected>
-        </Stack>
+            <Stack.Protected guard={!isLoggedIn}>
+              <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+            </Stack.Protected>
+          </Stack>
+        </BottomSheetModalProvider>
       </GestureHandlerRootView>
     </Provider>
   );
