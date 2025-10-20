@@ -16,7 +16,13 @@ const WelcomeScreen: React.FC = () => {
   const router = useRouter();
 
   const handleSignIn = () => router.push("/login");
-  const handleSignUp = () => router.push("/login");
+  const handleSignUp = () => {
+    if (type === "client") {
+      router.push("/(auth)/register/client/step-1");
+    } else if (type === "courier") {
+      router.push("/(auth)/register/driver/step-1");
+    }
+  };
 
   return (
     <View style={styles.container}>
