@@ -1,31 +1,42 @@
-import {
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-  FlatList,
-  View,
-} from "react-native";
+import { TouchableOpacity, StyleSheet, ScrollView, View } from "react-native";
 import { ButtonPrimary, ButtonSecondary } from "@/components/ui/Buttons";
 import { PhoneNumberInput, BottomSheet } from "@/components/shared";
 import { TermsAndPrivacy } from "@/components/TermsAndPrivacy";
+import { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 import { Stack, useRouter } from "expo-router";
 import { Colors } from "@/constants/Colors";
 import { useState, useRef } from "react";
 import { Text } from "@/components/ui";
 
+type CountryOption = {
+  phoneCode: string;
+  code: string;
+  name: string;
+  flag: string;
+};
+
 const countryData = [
   { code: "GB", name: "United Kingdom", flag: "🇬🇧", phoneCode: "+44" },
   { code: "US", name: "United States", flag: "🇺🇸", phoneCode: "+1" },
+  { code: "ZA", name: "South Africa", flag: "🇿🇦", phoneCode: "+27" },
   { code: "AU", name: "Australia", flag: "🇦🇺", phoneCode: "+61" },
+  { code: "AR", name: "Argentina", flag: "🇦🇷", phoneCode: "+54" },
   { code: "AM", name: "Armenia", flag: "🇦🇲", phoneCode: "+374" },
+  { code: "NG", name: "Nigeria", flag: "🇳🇬", phoneCode: "+234" },
+  { code: "CO", name: "Colombia", flag: "🇨🇴", phoneCode: "+57" },
   { code: "DE", name: "Germany", flag: "🇩🇪", phoneCode: "+49" },
   { code: "FR", name: "France", flag: "🇫🇷", phoneCode: "+33" },
   { code: "BR", name: "Brazil", flag: "🇧🇷", phoneCode: "+55" },
+  { code: "MX", name: "Mexico", flag: "🇲🇽", phoneCode: "+52" },
+  { code: "KE", name: "Kenya", flag: "🇰🇪", phoneCode: "+254" },
   { code: "RU", name: "Russia", flag: "🇷🇺", phoneCode: "+7" },
   { code: "CA", name: "Canada", flag: "🇨🇦", phoneCode: "+1" },
   { code: "JP", name: "Japan", flag: "🇯🇵", phoneCode: "+81" },
   { code: "CN", name: "China", flag: "🇨🇳", phoneCode: "+86" },
   { code: "IN", name: "India", flag: "🇮🇳", phoneCode: "+91" },
+  { code: "EG", name: "Egypt", flag: "🇪🇬", phoneCode: "+20" },
+  { code: "CL", name: "Chile", flag: "🇨🇱", phoneCode: "+56" },
+  { code: "PE", name: "Peru", flag: "🇵🇪", phoneCode: "+51" },
 ];
 
 export default function ClientPhoneStep() {
@@ -58,7 +69,7 @@ export default function ClientPhoneStep() {
     bottomSheetRef.current?.close();
   };
 
-  const countryOptions = countryData
+  const countryOptions: CountryOption[] = countryData
     .map((country) => ({
       phoneCode: country.phoneCode,
       code: country.code,
@@ -112,32 +123,35 @@ export default function ClientPhoneStep() {
 
       <BottomSheet
         onClose={() => setBottomSheetVisible(false)}
-        index={bottomSheetVisible ? 0 : -1}
+        index={bottomSheetVisible ? 1 : -1}
         enablePanDownToClose={true}
         ref={bottomSheetRef}
         snapPoints={["60%", "90%"]}
         backdrop={true}
+        asScrollable
       >
-        <View style={styles.bottomSheetContent}>
-          <View style={styles.bottomSheetHeader}>
-            <Text style={styles.bottomSheetTitle}>Select Country</Text>
-          </View>
-          <FlatList
-            data={countryOptions}
-            keyExtractor={(item) => item.code}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                style={styles.countryItem}
-                onPress={() => handleCountrySelect(item.code)}
-              >
-                <Text style={styles.countryFlag}>{item.flag}</Text>
-                <Text style={styles.countryName}>{item.name}</Text>
-                <Text style={styles.countryCode}>{item.phoneCode}</Text>
-              </TouchableOpacity>
-            )}
-            style={styles.countryList}
-          />
-        </View>
+        <BottomSheetFlatList<CountryOption>
+          data={countryOptions}
+          keyExtractor={(item: CountryOption) => item.code}
+          renderItem={({ item }: { item: CountryOption }) => (
+            <TouchableOpacity
+              style={styles.countryItem}
+              onPress={() => handleCountrySelect(item.code)}
+            >
+              <Text style={styles.countryFlag}>{item.flag}</Text>
+              <Text style={styles.countryName}>{item.name}</Text>
+              <Text style={styles.countryCode}>{item.phoneCode}</Text>
+            </TouchableOpacity>
+          )}
+          ListHeaderComponent={
+            <View style={styles.bottomSheetHeader}>
+              <Text style={styles.bottomSheetTitle}>Select Country</Text>
+            </View>
+          }
+          contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 24 }}
+          showsVerticalScrollIndicator={false}
+          bounces={false}
+        />
       </BottomSheet>
     </>
   );

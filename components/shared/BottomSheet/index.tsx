@@ -13,11 +13,13 @@ export interface CustomBottomSheetProps
   ref?: React.Ref<BottomSheetMethods>;
   children: React.ReactNode;
   backdrop?: boolean;
+  asScrollable?: boolean; // when true, render children directly (e.g., BottomSheetFlatList)
 }
 
 const CustomBottomSheet: React.FC<CustomBottomSheetProps> = ({
   viewProps,
   children,
+  asScrollable,
   ...props
 }) => {
   const renderBackdrop = useCallback(
@@ -49,7 +51,9 @@ const CustomBottomSheet: React.FC<CustomBottomSheetProps> = ({
       {...(props.backdrop !== false && { backdropComponent: renderBackdrop })}
       {...props}
     >
-      <BottomSheetView {...viewProps}>{children}</BottomSheetView>
+      {asScrollable ? children : (
+        <BottomSheetView {...viewProps}>{children}</BottomSheetView>
+      )}
     </BottomSheet>
   );
 };

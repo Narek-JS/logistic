@@ -33,7 +33,7 @@ export default function RootLayout() {
 
   return (
     <Provider store={store}>
-      <GestureHandlerRootView>
+      <GestureHandlerRootView style={{ flex: 1 }}>
         <Stack>
           <Stack.Protected guard={isLoggedIn && user?.role === "client"}>
             <Stack.Screen name="(client)" options={{ headerShown: false }} />
