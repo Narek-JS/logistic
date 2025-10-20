@@ -80,41 +80,38 @@ export default function ClientPhoneStep() {
           headerShown: true,
         }}
       />
-      <ScrollView>
-        <View style={styles.container}>
-          <View style={styles.content}>
-            {/* Phone Number Input */}
-            <PhoneNumberInput
-              onCountryCodePress={handleOpenBottomSheet}
-              selectedCountryCode={selectedCountryCode}
-              onChange={setPhoneNumber}
-              placeholder="055 555 555"
-              value={phoneNumber}
-            />
-            {/* Send Code Button */}
-            <ButtonPrimary
-              style={styles.sendCodeButton}
-              disabled={!canContinue}
-              onPress={handleSend}
-            >
-              Send Code
-            </ButtonPrimary>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.content}
+      >
+        {/* Top Group */}
+        <View>
+          <PhoneNumberInput
+            onCountryCodePress={handleOpenBottomSheet}
+            selectedCountryCode={selectedCountryCode}
+            onChange={setPhoneNumber}
+            placeholder="055 555 555"
+            value={phoneNumber}
+          />
+          <ButtonPrimary
+            style={styles.sendCodeButton}
+            disabled={!canContinue}
+            onPress={handleSend}
+          >
+            Send Code
+          </ButtonPrimary>
+        </View>
 
-            {/* YoPhone Button */}
-            <ButtonSecondary
-              style={styles.yoPhoneButton}
-              onPress={handleYoPhone}
-            >
-              <Text style={styles.yoText}>yo</Text>{" "}
-              <Text>Continue with YoPhone</Text>
-            </ButtonSecondary>
-
-            {/* Terms and Privacy */}
-            <TermsAndPrivacy
-              termsCallback={() => console.log("Terms pressed")}
-              privacyCallback={() => console.log("Privacy pressed")}
-            />
-          </View>
+        {/* Bottom Group (with original gap applied) */}
+        <View style={{ gap: 16 }}>
+          <ButtonSecondary style={styles.yoPhoneButton} onPress={handleYoPhone}>
+            <Text style={styles.yoText}>yo</Text>{" "}
+            <Text>Continue with YoPhone</Text>
+          </ButtonSecondary>
+          <TermsAndPrivacy
+            termsCallback={() => console.log("Terms pressed")}
+            privacyCallback={() => console.log("Privacy pressed")}
+          />
         </View>
       </ScrollView>
 
@@ -158,9 +155,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   content: {
-    flex: 1,
+    flexGrow: 1,
     padding: 16,
-    gap: 16,
+    justifyContent: "space-between",
   },
   stepIndicator: {
     fontSize: 14,
