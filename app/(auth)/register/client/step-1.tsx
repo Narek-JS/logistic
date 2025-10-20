@@ -60,7 +60,12 @@ export default function ClientPhoneStep() {
     <>
       <Stack.Screen
         options={{
-          headerRight: () => <Text style={styles.stepIndicator}>1/2</Text>,
+          headerRight: () => (
+            <View style={styles.headerRightContainer}>
+              <Text style={styles.stepActive}>1/</Text>
+              <Text style={styles.stepInactive}>2</Text>
+            </View>
+          ),
           headerLeft: () => (
             <TouchableOpacity onPress={() => router.back()}>
               <FontAwesome name="chevron-left" size={16} />
@@ -149,10 +154,20 @@ const styles = StyleSheet.create({
     padding: 16,
     justifyContent: "space-between",
   },
-  stepIndicator: {
-    fontSize: 14,
-    color: "#000",
-    fontWeight: "500",
+  headerRightContainer: {
+    fontWeight: "bold",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  stepActive: {
+    fontSize: 16,
+    color: "#000000",
+    fontWeight: "bold",
+  },
+  stepInactive: {
+    fontSize: 16,
+    color: "#BDBDBD",
+    fontWeight: "bold",
   },
   sendCodeButton: {
     marginTop: 8,
