@@ -1,6 +1,6 @@
 import { TouchableOpacity, StyleSheet, ScrollView, View } from "react-native";
 import { ButtonPrimary, ButtonSecondary } from "@/components/ui/Buttons";
-import { PhoneNumberInput, BottomSheet } from "@/components/shared";
+import { BottomSheetModal, PhoneNumberInput } from "@/components/shared";
 import { countryData } from "@/components/shared/PhoneNumberInput";
 import { TermsAndPrivacy } from "@/components/TermsAndPrivacy";
 import { BottomSheetFlatList } from "@gorhom/bottom-sheet";
@@ -21,7 +21,6 @@ export default function ClientPhoneStep() {
   const router = useRouter();
 
   const [selectedCountryCode, setSelectedCountryCode] = useState("US");
-  const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
 
   const bottomSheetRef = useRef<any>(null);
@@ -37,14 +36,12 @@ export default function ClientPhoneStep() {
   };
 
   const handleOpenBottomSheet = () => {
-    setBottomSheetVisible(true);
-    bottomSheetRef.current?.snapToIndex(0);
+    bottomSheetRef.current?.present();
   };
 
   const handleCountrySelect = (countryCode: string) => {
     setSelectedCountryCode(countryCode);
-    setBottomSheetVisible(false);
-    bottomSheetRef.current?.close();
+    bottomSheetRef.current?.dismiss();
   };
 
   const countryOptions: CountryOption[] = countryData
@@ -99,7 +96,7 @@ export default function ClientPhoneStep() {
         <View style={{ gap: 16, marginBottom: 24 }}>
           <ButtonSecondary style={styles.yoPhoneButton} onPress={handleYoPhone}>
             <Text style={styles.yoText}>yo</Text>{" "}
-            <Text>Continue with YoPhone</Text>
+            <Text>Continue with Yo. sPhone</Text>
           </ButtonSecondary>
           <TermsAndPrivacy
             termsCallback={() => console.log("Terms pressed")}
@@ -108,13 +105,11 @@ export default function ClientPhoneStep() {
         </View>
       </ScrollView>
 
-      <BottomSheet
-        onClose={() => setBottomSheetVisible(false)}
-        index={bottomSheetVisible ? 1 : -1}
+      <BottomSheetModal
+        onClose={() => {}}
         enablePanDownToClose={true}
         ref={bottomSheetRef}
         snapPoints={["60%"]}
-        useModal={true}
         asScrollable
       >
         <BottomSheetFlatList<CountryOption>
@@ -139,7 +134,7 @@ export default function ClientPhoneStep() {
           showsVerticalScrollIndicator={false}
           bounces={false}
         />
-      </BottomSheet>
+      </BottomSheetModal>
     </>
   );
 }
