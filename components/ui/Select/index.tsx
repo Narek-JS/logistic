@@ -10,9 +10,9 @@ import { BottomSheetModal } from "@/components/shared/BottomSheets/BottomSheetMo
 import { horizontalScale, verticalScale } from "@/utils/device-scale";
 import { ArrowBottom } from "@/components/Icons/ArrowBottom";
 import { BottomSheetFlatList } from "@gorhom/bottom-sheet";
-import { ReactNode, useRef, useState } from "react";
 import { Text } from "@/components/ui/Text";
 import { Colors } from "@/constants/Colors";
+import { ReactNode, useRef } from "react";
 
 interface SelectOption {
   title: ReactNode;
@@ -23,43 +23,31 @@ interface SelectOption {
 export interface SelectProps {
   renderSelectedValue?: (value: string) => React.ReactNode;
   onChange?: (value: string) => void;
-  style?: StyleProp<ViewStyle>;
   inputStyle?: StyleProp<ViewStyle>;
+  style?: StyleProp<ViewStyle>;
   options: SelectOption[];
   placeholder?: string;
+  hideArrow?: boolean;
   value?: string;
   error?: string;
   title?: string;
-  customSearch?: (
-    searchText: string,
-    options: SelectOption[]
-  ) => SelectOption[];
 }
 
 const Select: React.FC<SelectProps> = ({
   renderSelectedValue,
+  hideArrow = false,
   placeholder,
+  inputStyle,
   onChange,
   options,
   style,
-  inputStyle,
   value,
   title,
   error,
-  customSearch,
 }) => {
   const bottomSheetRef = useRef<any>(null);
-  const [searchText, setSearchText] = useState("");
 
   const selectedOption = options.find((option) => option.value === value);
-
-  const filteredOptions = customSearch
-    ? customSearch(searchText, options)
-    : options.filter((option) =>
-        typeof option.title === "string"
-          ? option.title.toLowerCase().includes(searchText.toLowerCase())
-          : true
-      );
 
   const handleSelectPress = () => {
     bottomSheetRef.current?.present();
@@ -88,9 +76,11 @@ const Select: React.FC<SelectProps> = ({
           ) : (
             <Text style={{ fontSize: 16 }}>{placeholder}</Text>
           )}
-          <View style={styles.arrow}>
-            <ArrowBottom />
-          </View>
+          {!hideArrow && (
+            <View style={styles.arrow}>
+              <ArrowBottom />
+            </View>
+          )}
         </Pressable>
 
         {error && <Text style={styles.errorText}>{error}</Text>}
@@ -104,7 +94,7 @@ const Select: React.FC<SelectProps> = ({
         asScrollable
       >
         <BottomSheetFlatList
-          data={filteredOptions}
+          data={options}
           keyExtractor={(item: any) => item.value}
           renderItem={({ item }: any) => (
             <TouchableOpacity

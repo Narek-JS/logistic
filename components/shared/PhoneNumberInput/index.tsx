@@ -81,15 +81,6 @@ const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
       <View style={styles.inputRow}>
         {/* Country Code Selector */}
         <Select
-          customSearch={(text, options) =>
-            options.filter((option) =>
-              typeof option.extra?.countryName === "string"
-                ? option.extra.countryName
-                    .toLowerCase()
-                    .includes(text.toLowerCase())
-                : false
-            )
-          }
           value={selectedCountryCode}
           options={countryOptions}
           onChange={(value) => setSelectedCountryCode(value as CountryCode)}
@@ -110,6 +101,7 @@ const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
           style={[styles.countrySelectWrapper, disabled && styles.disabledCell]}
           inputStyle={styles.countrySelectInput}
           title="Select Country"
+          hideArrow={true}
         />
 
         {/* Phone Number Input */}
