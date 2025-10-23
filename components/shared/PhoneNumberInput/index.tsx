@@ -1,13 +1,15 @@
-import { TouchableOpacity, StyleSheet, TextInput, View } from "react-native";
+import { Select, SelectProps } from "@/components/ui/Select";
+import { StyleSheet, TextInput, View } from "react-native";
 import { useEffect, useMemo, useState } from "react";
 import { FontAwesome } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
 import { Text } from "@/components/ui";
+import parsePhoneNumber, { CountryCode } from "libphonenumber-js";
+import countryData, { Country } from "world-countries";
 
 export interface PhoneNumberInputProps {
   onChange?: (value: string) => void;
-  onCountryCodePress?: () => void;
-  selectedCountryCode?: string;
+  defaultCountry?: CountryCode;
   placeholder?: string;
   disabled?: boolean;
   value?: string;
@@ -15,68 +17,62 @@ export interface PhoneNumberInputProps {
   style?: any;
 }
 
-export const countryData = [
-  { code: "GB", name: "United Kingdom", flag: "🇬🇧", phoneCode: "+44" },
-  { code: "US", name: "United States", flag: "🇺🇸", phoneCode: "+1" },
-  { code: "ZA", name: "South Africa", flag: "🇿🇦", phoneCode: "+27" },
-  { code: "AU", name: "Australia", flag: "🇦🇺", phoneCode: "+61" },
-  { code: "AR", name: "Argentina", flag: "🇦🇷", phoneCode: "+54" },
-  { code: "AM", name: "Armenia", flag: "🇦🇲", phoneCode: "+374" },
-  { code: "NG", name: "Nigeria", flag: "🇳🇬", phoneCode: "+234" },
-  { code: "CO", name: "Colombia", flag: "🇨🇴", phoneCode: "+57" },
-  { code: "DE", name: "Germany", flag: "🇩🇪", phoneCode: "+49" },
-  { code: "FR", name: "France", flag: "🇫🇷", phoneCode: "+33" },
-  { code: "BR", name: "Brazil", flag: "🇧🇷", phoneCode: "+55" },
-  { code: "MX", name: "Mexico", flag: "🇲🇽", phoneCode: "+52" },
-  { code: "KE", name: "Kenya", flag: "🇰🇪", phoneCode: "+254" },
-  { code: "RU", name: "Russia", flag: "🇷🇺", phoneCode: "+7" },
-  { code: "CA", name: "Canada", flag: "🇨🇦", phoneCode: "+1" },
-  { code: "JP", name: "Japan", flag: "🇯🇵", phoneCode: "+81" },
-  { code: "CN", name: "China", flag: "🇨🇳", phoneCode: "+86" },
-  { code: "IN", name: "India", flag: "🇮🇳", phoneCode: "+91" },
-  { code: "EG", name: "Egypt", flag: "🇪🇬", phoneCode: "+20" },
-  { code: "CL", name: "Chile", flag: "🇨🇱", phoneCode: "+56" },
-  { code: "PE", name: "Peru", flag: "🇵🇪", phoneCode: "+51" },
-];
+const getCountryNumber = (country: Country) =>
+  country.idd.root +
+  (country.idd.suffixes.length === 1 ? country.idd.suffixes[0] : "");
 
 const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
-  selectedCountryCode = "US",
-  onCountryCodePress,
-  disabled = false,
-  placeholder,
   onChange,
+  placeholder = "Phone number",
+  defaultCountry = "AM",
+  disabled = false,
   error,
   value,
   style,
 }) => {
   const [inputValue, setInputValue] = useState("");
+  const [selectedCountryCode, setSelectedCountryCode] = useState<
+    CountryCode | undefined
+  >(defaultCountry);
 
   const selectedCountry = useMemo(
-    () => countryData.find((country) => country.code === selectedCountryCode),
+    () => countryData.find((country) => country.cca2 === selectedCountryCode),
     [selectedCountryCode]
+  );
+
+  const countryOptions = useMemo(
+    () =>
+      countryData.map<SelectProps["options"][0]>((country) => ({
+        title: (
+          <Text style={styles.countryOption}>
+            {country.flag} {getCountryNumber(country)} {country.name.common}
+          </Text>
+        ),
+        value: country.cca2,
+        extra: { countryName: country.name.common },
+      })),
+    []
   );
 
   const handleInputChange = (text: string) => {
     setInputValue(text);
 
-    if (selectedCountry) {
-      const fullPhoneNumber = selectedCountry.phoneCode + text;
-      onChange?.(fullPhoneNumber);
-    }
-  };
+    const phoneNumber = parsePhoneNumber(
+      (selectedCountry ? getCountryNumber(selectedCountry) : "") + text,
+      selectedCountryCode
+    );
 
-  const handleCountryCodePress = () => {
-    if (!disabled && onCountryCodePress) {
-      onCountryCodePress();
+    if (phoneNumber) {
+      onChange?.(phoneNumber.number);
     }
   };
 
   useEffect(() => {
-    if (value) {
-      const country = countryData.find((c) => value.startsWith(c.phoneCode));
-      if (country) {
-        setInputValue(value.replace(country.phoneCode, ""));
-      }
+    const parsedValue = value ? parsePhoneNumber(value) : undefined;
+
+    if (parsedValue) {
+      setSelectedCountryCode(parsedValue.country);
+      setInputValue(parsedValue.nationalNumber);
     }
   }, [value]);
 
@@ -84,20 +80,37 @@ const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
     <View style={[styles.container, style]}>
       <View style={styles.inputRow}>
         {/* Country Code Selector */}
-        <TouchableOpacity
-          style={[styles.codeCell, disabled && styles.disabledCell]}
-          onPress={handleCountryCodePress}
-          activeOpacity={0.8}
-          disabled={disabled}
-        >
-          <Text style={styles.codeLabel}>Code</Text>
-          <View style={styles.codeValueRow}>
-            <Text style={styles.codeValue}>
-              {selectedCountry ? selectedCountry.phoneCode : "+1"}
-            </Text>
-            <FontAwesome name="chevron-down" size={12} color="#6b7280" />
-          </View>
-        </TouchableOpacity>
+        <Select
+          customSearch={(text, options) =>
+            options.filter((option) =>
+              typeof option.extra?.countryName === "string"
+                ? option.extra.countryName
+                    .toLowerCase()
+                    .includes(text.toLowerCase())
+                : false
+            )
+          }
+          value={selectedCountryCode}
+          options={countryOptions}
+          onChange={(value) => setSelectedCountryCode(value as CountryCode)}
+          renderSelectedValue={() => (
+            <View style={styles.codeCellContent}>
+              <View style={styles.codeLabelRow}>
+                <Text style={styles.codeLabel}>Code</Text>
+                <FontAwesome name="chevron-down" size={12} color="#6b7280" />
+              </View>
+              <View style={styles.codeValueRow}>
+                <Text style={styles.countryFlag}>{selectedCountry?.flag}</Text>
+                <Text style={styles.codeValue}>
+                  {selectedCountry ? getCountryNumber(selectedCountry) : "+374"}
+                </Text>
+              </View>
+            </View>
+          )}
+          style={[styles.countrySelectWrapper, disabled && styles.disabledCell]}
+          inputStyle={styles.countrySelectInput}
+          title="Select Country"
+        />
 
         {/* Phone Number Input */}
         <View style={styles.phoneCell}>
@@ -136,6 +149,29 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     gap: 6,
   },
+  countrySelectWrapper: {
+    width: 92,
+    paddingHorizontal: 0,
+    paddingVertical: 0,
+    borderWidth: 0,
+    borderRadius: 0,
+    backgroundColor: "transparent",
+    height: "auto",
+    minWidth: 0,
+  },
+  codeCellContent: {
+    width: 60,
+  },
+  countrySelectInput: {
+    width: 92,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderWidth: 0,
+    borderRadius: 0,
+    backgroundColor: "transparent",
+    height: "auto",
+    minWidth: 0,
+  },
   phoneCell: {
     flex: 1,
     paddingHorizontal: 12,
@@ -148,6 +184,11 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#6b7280",
   },
+  codeLabelRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
   phoneLabel: {
     fontSize: 12,
     color: "#6b7280",
@@ -156,6 +197,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
+  },
+  countryFlag: {
+    fontSize: 16,
   },
   codeValue: {
     fontSize: 16,
@@ -166,6 +210,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     padding: 0,
     height: 22,
+    color: "#000",
+  },
+  countryOption: {
+    fontSize: 16,
     color: "#000",
   },
   errorText: {

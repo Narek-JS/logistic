@@ -1,57 +1,55 @@
 import { TouchableOpacity, StyleSheet, ScrollView, View } from "react-native";
 import { ButtonPrimary, ButtonSecondary } from "@/components/ui/Buttons";
-import { BottomSheetModal, PhoneNumberInput } from "@/components/shared";
-import { countryData } from "@/components/shared/PhoneNumberInput";
 import { TermsAndPrivacy } from "@/components/TermsAndPrivacy";
-import { BottomSheetFlatList } from "@gorhom/bottom-sheet";
+import { PhoneNumberInput } from "@/components/shared";
+import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { FontAwesome } from "@expo/vector-icons";
 import { Stack, useRouter } from "expo-router";
 import { Colors } from "@/constants/Colors";
-import { useState, useRef } from "react";
 import { Text } from "@/components/ui";
+import parsePhoneNumber from "libphonenumber-js";
+import * as yup from "yup";
 
-type CountryOption = {
-  phoneCode: string;
-  code: string;
-  name: string;
-  flag: string;
-};
+const validationSchema = yup.object().shape({
+  phoneNumber: yup
+    .string()
+    .test(
+      "is-valid-phone",
+      "Please enter a valid phone number",
+      function (value) {
+        if (!value) return false;
+        try {
+          const phoneNumber = parsePhoneNumber(value);
+          return phoneNumber ? phoneNumber.isValid() : false;
+        } catch {
+          return false;
+        }
+      }
+    )
+    .required("Phone number is required"),
+});
 
 export default function ClientPhoneStep() {
   const router = useRouter();
 
-  const [selectedCountryCode, setSelectedCountryCode] = useState("US");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const {
+    control,
+    handleSubmit,
+    formState: { isValid },
+  } = useForm({
+    resolver: yupResolver(validationSchema),
+    mode: "onChange",
+    defaultValues: { phoneNumber: "" },
+  });
 
-  const bottomSheetRef = useRef<any>(null);
-  const canContinue = phoneNumber.length >= 10;
-
-  const handleSend = () => {
-    if (!canContinue) return;
+  const onSubmit = (data: { phoneNumber: string }) => {
     router.push("/(auth)/register/client/step-2");
   };
 
   const handleYoPhone = () => {
     console.log("YoPhone integration");
   };
-
-  const handleOpenBottomSheet = () => {
-    bottomSheetRef.current?.present();
-  };
-
-  const handleCountrySelect = (countryCode: string) => {
-    setSelectedCountryCode(countryCode);
-    bottomSheetRef.current?.dismiss();
-  };
-
-  const countryOptions: CountryOption[] = countryData
-    .map((country) => ({
-      phoneCode: country.phoneCode,
-      code: country.code,
-      name: country.name,
-      flag: country.flag,
-    }))
-    .sort((a, b) => a.name.localeCompare(b.name));
 
   return (
     <>
@@ -77,17 +75,23 @@ export default function ClientPhoneStep() {
         style={styles.container}
       >
         <View style={{ gap: 5 }}>
-          <PhoneNumberInput
-            onCountryCodePress={handleOpenBottomSheet}
-            selectedCountryCode={selectedCountryCode}
-            onChange={setPhoneNumber}
-            placeholder="055 555 555"
-            value={phoneNumber}
+          <Controller
+            control={control}
+            name="phoneNumber"
+            render={({ field, fieldState }) => (
+              <PhoneNumberInput
+                onChange={field.onChange}
+                placeholder="Enter phone number"
+                value={field.value}
+                error={fieldState.error?.message}
+                defaultCountry="AM"
+              />
+            )}
           />
           <ButtonPrimary
             style={styles.sendCodeButton}
-            disabled={!canContinue}
-            onPress={handleSend}
+            disabled={!isValid}
+            onPress={handleSubmit(onSubmit)}
           >
             Send Code
           </ButtonPrimary>
@@ -104,37 +108,6 @@ export default function ClientPhoneStep() {
           />
         </View>
       </ScrollView>
-
-      <BottomSheetModal
-        onClose={() => {}}
-        enablePanDownToClose={true}
-        ref={bottomSheetRef}
-        snapPoints={["60%"]}
-        asScrollable
-      >
-        <BottomSheetFlatList<CountryOption>
-          data={countryOptions}
-          keyExtractor={(item: CountryOption) => item.code}
-          renderItem={({ item }: { item: CountryOption }) => (
-            <TouchableOpacity
-              style={styles.countryItem}
-              onPress={() => handleCountrySelect(item.code)}
-            >
-              <Text style={styles.countryFlag}>{item.flag}</Text>
-              <Text style={styles.countryName}>{item.name}</Text>
-              <Text style={styles.countryCode}>{item.phoneCode}</Text>
-            </TouchableOpacity>
-          )}
-          ListHeaderComponent={
-            <View style={styles.bottomSheetHeader}>
-              <Text style={styles.bottomSheetTitle}>Select Country</Text>
-            </View>
-          }
-          contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 24 }}
-          showsVerticalScrollIndicator={false}
-          bounces={false}
-        />
-      </BottomSheetModal>
     </>
   );
 }
@@ -182,45 +155,5 @@ const styles = StyleSheet.create({
   yoText: {
     fontWeight: "700",
     fontSize: 16,
-  },
-  bottomSheetContent: {
-    flex: 1,
-    paddingHorizontal: 20,
-  },
-  bottomSheetHeader: {
-    paddingVertical: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: "#e5e7eb",
-    marginBottom: 10,
-  },
-  bottomSheetTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#000",
-    textAlign: "center",
-  },
-  countryList: {
-    flex: 1,
-  },
-  countryItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: "#f1f5f9",
-  },
-  countryFlag: {
-    fontSize: 20,
-    marginRight: 12,
-  },
-  countryName: {
-    flex: 1,
-    fontSize: 16,
-    color: "#000",
-  },
-  countryCode: {
-    fontSize: 16,
-    color: "#6b7280",
-    fontWeight: "500",
   },
 });
