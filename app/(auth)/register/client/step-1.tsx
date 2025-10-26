@@ -5,12 +5,12 @@ import { PhoneNumberInput } from "@/components/shared";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FontAwesome } from "@expo/vector-icons";
+import { YoPhoneIcon } from "@/components/Icons";
 import { Stack, useRouter } from "expo-router";
 import { Colors } from "@/constants/Colors";
 import { Text } from "@/components/ui";
 import parsePhoneNumber from "libphonenumber-js";
 import * as yup from "yup";
-import { YoPhoneIcon } from "@/components/Icons";
 
 const validationSchema = yup.object().shape({
   phoneNumber: yup
@@ -99,9 +99,14 @@ export default function ClientPhoneStep() {
         </View>
 
         <View style={{ gap: 16, marginBottom: 24 }}>
-          <ButtonSecondary style={styles.yoPhoneButton} onPress={handleYoPhone}>
-            <YoPhoneIcon />
-            <Text>Continue with Yo. sPhone</Text>
+          <ButtonSecondary
+            leftComponent={<YoPhoneIcon />}
+            style={styles.yoPhoneButton}
+            onPress={handleYoPhone}
+          >
+            <Text style={{ fontFamily: "open-sans-bold" }}>
+              Continue with YoPhone
+            </Text>
           </ButtonSecondary>
           <TermsAndPrivacy
             termsCallback={() => console.log("Terms pressed")}

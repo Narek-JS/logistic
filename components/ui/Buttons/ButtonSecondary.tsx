@@ -5,20 +5,25 @@ import {
   TextProps,
   StyleProp,
   TextStyle,
+  View,
 } from "react-native";
 import { Colors } from "@/constants/Colors";
 import { Text } from "@/components/ui";
 
 interface ButtonSecondaryProps extends TouchableOpacityProps {
   textStyle?: StyleProp<TextStyle>;
+  rightComponent?: React.ReactNode;
+  leftComponent?: React.ReactNode;
   textProps?: TextProps;
 }
 
 const ButtonSecondary: React.FC<ButtonSecondaryProps> = ({
-  style,
+  rightComponent,
+  leftComponent,
   textStyle,
   textProps,
   children,
+  style,
   ...touchableOpacityProps
 }) => {
   return (
@@ -27,9 +32,13 @@ const ButtonSecondary: React.FC<ButtonSecondaryProps> = ({
       activeOpacity={0.8}
       {...touchableOpacityProps}
     >
-      <Text style={[styles.secondaryButtonText, textStyle]} {...textProps}>
-        {children}
-      </Text>
+      <View style={styles.contentContainer}>
+        {leftComponent}
+        <Text style={[styles.secondaryButtonText, textStyle]} {...textProps}>
+          {children}
+        </Text>
+        {rightComponent}
+      </View>
     </TouchableOpacity>
   );
 };
@@ -42,6 +51,12 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     width: "100%",
     height: 50,
+  },
+  contentContainer: {
+    justifyContent: "center",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
   },
   secondaryButtonText: {
     fontWeight: "600",
