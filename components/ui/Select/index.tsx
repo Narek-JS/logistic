@@ -8,8 +8,8 @@ import {
 } from "react-native";
 import { BottomSheetModal } from "@/components/shared/BottomSheets/BottomSheetModal";
 import { horizontalScale, verticalScale } from "@/utils/device-scale";
-import { ArrowBottom } from "@/components/Icons/ArrowBottom";
 import { BottomSheetFlatList } from "@gorhom/bottom-sheet";
+import { ArrowBottom } from "@/components/Icons";
 import { Text } from "@/components/ui/Text";
 import { Colors } from "@/constants/Colors";
 import { ReactNode, useRef } from "react";

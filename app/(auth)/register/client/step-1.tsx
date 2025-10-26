@@ -10,6 +10,7 @@ import { Colors } from "@/constants/Colors";
 import { Text } from "@/components/ui";
 import parsePhoneNumber from "libphonenumber-js";
 import * as yup from "yup";
+import { YoPhoneIcon } from "@/components/Icons";
 
 const validationSchema = yup.object().shape({
   phoneNumber: yup
@@ -99,7 +100,7 @@ export default function ClientPhoneStep() {
 
         <View style={{ gap: 16, marginBottom: 24 }}>
           <ButtonSecondary style={styles.yoPhoneButton} onPress={handleYoPhone}>
-            <Text style={styles.yoText}>yo</Text>{" "}
+            <YoPhoneIcon />
             <Text>Continue with Yo. sPhone</Text>
           </ButtonSecondary>
           <TermsAndPrivacy
@@ -151,9 +152,5 @@ const styles = StyleSheet.create({
     gap: 8,
     alignItems: "center",
     justifyContent: "center",
-  },
-  yoText: {
-    fontWeight: "700",
-    fontSize: 16,
   },
 });

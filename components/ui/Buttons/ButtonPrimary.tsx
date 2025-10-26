@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     height: 50,
   },
   primaryButtonText: {
-    fontWeight: "600",
+    fontWeight: "700",
     fontSize: 17,
   },
 });
