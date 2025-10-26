@@ -142,14 +142,14 @@ const styles = StyleSheet.create({
     transform: "translateY(50%)",
   },
   errorText: {
-    color: "#ef4444",
+    color: Colors.error,
     fontSize: 12,
     marginTop: 4,
   },
   bottomSheetHeader: {
     paddingVertical: 20,
     borderBottomWidth: 1,
-    borderBottomColor: "#e5e7eb",
+    borderBottomColor: Colors.secondary,
     marginBottom: 10,
   },
   bottomSheetTitle: {

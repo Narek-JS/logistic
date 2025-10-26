@@ -88,7 +88,7 @@ const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
             <View style={styles.codeCellContent}>
               <View style={styles.codeLabelRow}>
                 <Text style={styles.codeLabel}>Code</Text>
-                <FontAwesome name="chevron-down" size={12} color="#6b7280" />
+                <FontAwesome name="chevron-down" size={12} color={Colors.secondaryLabel} />
               </View>
               <View style={styles.codeValueRow}>
                 <Text style={styles.countryFlag}>{selectedCountry?.flag}</Text>
@@ -110,7 +110,7 @@ const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
           <TextInput
             keyboardType="phone-pad"
             placeholder={placeholder}
-            placeholderTextColor="#6b7280"
+            placeholderTextColor={Colors.secondaryLabel}
             style={[styles.phoneInput, disabled && styles.disabledInput]}
             value={inputValue}
             onChangeText={handleInputChange}
@@ -170,11 +170,11 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     gap: 6,
     borderLeftWidth: 1,
-    borderLeftColor: "#e5e7eb",
+    borderLeftColor: Colors.secondary,
   },
   codeLabel: {
     fontSize: 12,
-    color: "#6b7280",
+    color: Colors.secondaryLabel,
   },
   codeLabelRow: {
     flexDirection: "row",
@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
   },
   phoneLabel: {
     fontSize: 12,
-    color: "#6b7280",
+    color: Colors.secondaryLabel,
   },
   codeValueRow: {
     flexDirection: "row",
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
     color: "#000000",
   },
   errorText: {
-    color: "#ef4444",
+    color: Colors.error,
     fontSize: 12,
     marginTop: 4,
   },

@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
   },
   stepInactive: {
     fontSize: 16,
-    color: "#BDBDBD",
+    color: Colors.inactiveGray,
     fontWeight: "bold",
   },
   sendCodeButton: {
