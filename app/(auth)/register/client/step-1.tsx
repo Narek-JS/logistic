@@ -7,32 +7,18 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { FontAwesome } from "@expo/vector-icons";
 import { YoPhoneIcon } from "@/components/Icons";
 import { Stack, useRouter } from "expo-router";
+import { useLocale } from "@/hooks/useLocal";
 import { Colors } from "@/constants/Colors";
 import { Text } from "@/components/ui";
-import parsePhoneNumber from "libphonenumber-js";
 import * as yup from "yup";
 
 const validationSchema = yup.object().shape({
-  phoneNumber: yup
-    .string()
-    .test(
-      "is-valid-phone",
-      "Please enter a valid phone number",
-      function (value) {
-        if (!value) return false;
-        try {
-          const phoneNumber = parsePhoneNumber(value);
-          return phoneNumber ? phoneNumber.isValid() : false;
-        } catch {
-          return false;
-        }
-      }
-    )
-    .required("Phone number is required"),
+  phoneNumber: yup.string().required(),
 });
 
 export default function ClientPhoneStep() {
   const router = useRouter();
+  const { t } = useLocale();
 
   const {
     control,
@@ -67,7 +53,7 @@ export default function ClientPhoneStep() {
               <FontAwesome name="chevron-left" size={16} />
             </TouchableOpacity>
           ),
-          title: "Client Phone Verification",
+          title: t("clientPhoneVerification.title"),
           headerShown: true,
         }}
       />
@@ -82,7 +68,9 @@ export default function ClientPhoneStep() {
             render={({ field, fieldState }) => (
               <PhoneNumberInput
                 onChange={field.onChange}
-                placeholder="Enter phone number"
+                placeholder={t(
+                  "clientPhoneVerification.phoneNumberPlaceholder"
+                )}
                 value={field.value}
                 error={fieldState.error?.message}
                 defaultCountry="AM"
@@ -94,7 +82,7 @@ export default function ClientPhoneStep() {
             disabled={!isValid}
             onPress={handleSubmit(onSubmit)}
           >
-            Send Code
+            {t("clientPhoneVerification.sendCodeButton")}
           </ButtonPrimary>
         </View>
 
@@ -105,7 +93,7 @@ export default function ClientPhoneStep() {
             onPress={handleYoPhone}
           >
             <Text style={{ fontFamily: "open-sans-bold" }}>
-              Continue with YoPhone
+              {t("clientPhoneVerification.continueWithYoPhone")}
             </Text>
           </ButtonSecondary>
           <TermsAndPrivacy
@@ -121,7 +109,7 @@ export default function ClientPhoneStep() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#FFFFFF",
   },
   content: {
     flexGrow: 1,

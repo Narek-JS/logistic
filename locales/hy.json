@@ -12,5 +12,20 @@
     "and": "և",
     "privacyPolicy": "գաղտնիության քաղաքականությանը",
     "period": "։"
+  },
+  "clientPhoneVerification": {
+    "title": "Հաճախորդի Հեռախոսի Վավերացում",
+    "phoneNumberPlaceholder": "Մուտքագրեք հեռախոսահամարը",
+    "sendCodeButton": "Ուղարկել Կոդը",
+    "continueWithYoPhone": "Շարունակել YoPhone-ով",
+    "phoneNumberRequired": "Հեռախոսահամարը պարտադիր է",
+    "phoneNumberInvalid": "Խնդրում ենք մուտքագրել վավեր հեռախոսահամար",
+    "verificationCode": {
+      "instruction": "Մուտքագրեք այն կոդը, որը մենք ուղարկեցինք ձեր հեռախոսին։ Այն վավեր է 2 րոպե։",
+      "verifyButton": "Վավերացնել",
+      "resendCode": "Նորից Ուղարկել",
+      "invalidCode": "Անվավեր կոդ:",
+      "codeRequired": "Կոդը պարտադիր է"
+    }
   }
 }

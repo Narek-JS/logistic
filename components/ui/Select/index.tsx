@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
   bottomSheetTitle: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#000",
+    color: "#000000",
     textAlign: "center",
   },
   optionItem: {

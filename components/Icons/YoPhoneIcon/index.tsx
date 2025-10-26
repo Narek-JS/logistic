@@ -6,7 +6,7 @@ type Props = Omit<ImageProps, "source"> & {
 };
 
 export const YoPhoneIcon: React.FC<Props> = ({
-  color = "#000",
+  color = "#000000",
   size = 24,
   style,
   ...rest

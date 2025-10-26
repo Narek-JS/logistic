@@ -196,17 +196,17 @@ const styles = StyleSheet.create({
   codeValue: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#000",
+    color: "#000000",
   },
   phoneInput: {
     fontSize: 16,
     padding: 0,
     height: 22,
-    color: "#000",
+    color: "#000000",
   },
   countryOption: {
     fontSize: 16,
-    color: "#000",
+    color: "#000000",
   },
   errorText: {
     color: "#ef4444",
