@@ -75,7 +75,7 @@ export default function ClientRegStep2() {
       const isValid = await verifyCode(data.code);
 
       if (isValid) {
-        router.replace("/(client)");
+        router.replace("/(auth)/register/client/step-3");
       } else {
         setShowError(true);
       }

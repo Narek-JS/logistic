@@ -30,5 +30,30 @@
       "invalidCode": "Invalid code.",
       "codeRequired": "Code is required"
     }
+  },
+  "clientRegStep3": {
+    "title": "Create Client account",
+    "firstName": "First Name",
+    "surename": "Surename",
+    "email": "Email",
+    "password": "Password",
+    "firstNamePlaceholder": "Name",
+    "surenamePlaceholder": "Surename",
+    "emailPlaceholder": "Email",
+    "createAccountButton": "Create account",
+    "firstNameRequired": "First name is required",
+    "surenameRequired": "Surename is required",
+    "emailRequired": "Email is required",
+    "emailInvalid": "Please enter a valid email address",
+    "passwordRequired": "Password is required",
+    "passwordWeak": "Password does not meet requirements",
+    "passwordValidation": {
+      "title": "Your password must be have at least:",
+      "min12": "Minimum 12 character",
+      "uppercase": "1 uppercase letter",
+      "lowercase": "1 lowercase letter",
+      "number": "1 number",
+      "symbol": "1 symbol"
+    }
   }
 }

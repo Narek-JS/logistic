@@ -27,5 +27,30 @@
       "invalidCode": "Անվավեր կոդ:",
       "codeRequired": "Կոդը պարտադիր է"
     }
+  },
+  "clientRegStep3": {
+    "title": "Ստեղծել Հաճախորդի Հաշիվ",
+    "firstName": "Անուն",
+    "surename": "Ազգանուն",
+    "email": "Էլ. փոստ",
+    "password": "Գաղտնաբառ",
+    "firstNamePlaceholder": "Անուն",
+    "surenamePlaceholder": "Ազգանուն",
+    "emailPlaceholder": "Էլ. փոստ",
+    "createAccountButton": "Ստեղծել հաշիվ",
+    "firstNameRequired": "Անունը պարտադիր է",
+    "surenameRequired": "Ազգանունը պարտադիր է",
+    "emailRequired": "Էլ. փոստը պարտադիր է",
+    "emailInvalid": "Խնդրում ենք մուտքագրել վավեր էլ. փոստ",
+    "passwordRequired": "Գաղտնաբառը պարտադիր է",
+    "passwordWeak": "Գաղտնաբառը չի համապատասխանում պահանջներին",
+    "passwordValidation": {
+      "title": "Ձեր գաղտնաբառը պետք է ունենա առնվազն:",
+      "min12": "Նվազագույնը 12 նիշ",
+      "uppercase": "1 մեծատառ",
+      "lowercase": "1 փոքրատառ",
+      "number": "1 թիվ",
+      "symbol": "1 նշան"
+    }
   }
 }
