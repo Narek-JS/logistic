@@ -156,6 +156,7 @@ export default function ClientRegStep3() {
             render={({ field, fieldState }) => (
               <>
                 <TextInput
+                  secureTextEntry={true}
                   label={t("clientRegStep3.password")}
                   value={password}
                   onChangeText={(text: string) => {

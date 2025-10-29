@@ -1,12 +1,14 @@
 import {
   TextInputProps as RNTextInputProps,
   TextInput as RNTextInput,
+  TouchableOpacity,
   StyleSheet,
   Animated,
   View,
   Text,
 } from "react-native";
 import { useState, useRef, useEffect } from "react";
+import { Feather } from "@expo/vector-icons";
 
 export interface FloatingLabelTextInputProps extends RNTextInputProps {
   onChangeText: (text: string) => void;
@@ -28,8 +30,18 @@ const FloatingLabelTextInput: React.FC<FloatingLabelTextInputProps> = ({
   value,
   ...rest
 }) => {
+  const [isSecure, setIsSecure] = useState(rest.secureTextEntry);
   const [isFocused, setIsFocused] = useState(false);
   const animatedValue = useRef(new Animated.Value(0)).current;
+  const isPasswordField = useRef(rest.secureTextEntry).current;
+
+  useEffect(() => {
+    setIsSecure(rest.secureTextEntry);
+  }, [rest.secureTextEntry]);
+
+  const toggleSecurity = () => {
+    setIsSecure((prev) => !prev);
+  };
 
   const isActive = isFocused || value.length > 0;
 
@@ -69,19 +81,38 @@ const FloatingLabelTextInput: React.FC<FloatingLabelTextInputProps> = ({
     zIndex: 1,
   };
 
+  const textInputStyle = [
+    styles.textInput,
+    isPasswordField && { paddingRight: 50 },
+  ];
+
   return (
     <View style={[styles.container, containerStyle]}>
       <View style={styles.inputContainer}>
         <Animated.Text style={labelStyle}>{label}</Animated.Text>
         <RNTextInput
           onChangeText={onChangeText}
-          style={styles.textInput}
+          secureTextEntry={isSecure}
+          style={textInputStyle}
           onFocus={handleFocus}
           onBlur={handleBlur}
           placeholder=""
           value={value}
           {...rest}
         />
+
+        {isPasswordField && (
+          <TouchableOpacity
+            style={styles.eyeIconContainer}
+            onPress={toggleSecurity}
+          >
+            <Feather
+              name={isSecure ? "eye-off" : "eye"}
+              color="#666"
+              size={22}
+            />
+          </TouchableOpacity>
+        )}
       </View>
 
       {errorText && <Text style={styles.errorText}>{errorText}</Text>}
@@ -106,11 +137,21 @@ const styles = StyleSheet.create({
     minHeight: 56,
   },
   textInput: {
-    paddingHorizontal: 16,
+    paddingLeft: 16,
+    paddingRight: 16,
     paddingBottom: 10,
     paddingTop: 26,
     fontSize: 16,
     color: "#000",
+  },
+  eyeIconContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    right: 16,
+    bottom: 0,
+    zIndex: 2,
+    top: 0,
   },
   errorText: {
     position: "absolute",
