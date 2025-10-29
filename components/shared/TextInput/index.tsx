@@ -33,7 +33,6 @@ const FloatingLabelTextInput: React.FC<FloatingLabelTextInputProps> = ({
   const [isSecure, setIsSecure] = useState(rest.secureTextEntry);
   const [isFocused, setIsFocused] = useState(false);
   const animatedValue = useRef(new Animated.Value(0)).current;
-  const isPasswordField = useRef(rest.secureTextEntry).current;
 
   useEffect(() => {
     setIsSecure(rest.secureTextEntry);
@@ -83,7 +82,7 @@ const FloatingLabelTextInput: React.FC<FloatingLabelTextInputProps> = ({
 
   const textInputStyle = [
     styles.textInput,
-    isPasswordField && { paddingRight: 50 },
+    rest.secureTextEntry && { paddingRight: 50 },
   ];
 
   return (
@@ -92,16 +91,16 @@ const FloatingLabelTextInput: React.FC<FloatingLabelTextInputProps> = ({
         <Animated.Text style={labelStyle}>{label}</Animated.Text>
         <RNTextInput
           onChangeText={onChangeText}
-          secureTextEntry={isSecure}
           style={textInputStyle}
           onFocus={handleFocus}
           onBlur={handleBlur}
           placeholder=""
           value={value}
           {...rest}
+          secureTextEntry={isSecure}
         />
 
-        {isPasswordField && (
+        {rest.secureTextEntry && (
           <TouchableOpacity
             style={styles.eyeIconContainer}
             onPress={toggleSecurity}

@@ -267,6 +267,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   formContainer: {
+    gap: 4,
     marginTop: 8,
   },
   validationContainer: {
