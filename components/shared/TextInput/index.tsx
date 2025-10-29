@@ -1,164 +1,130 @@
 import {
-  type MD3Theme,
-  TextInput,
-  HelperText,
-  useTheme,
-} from "react-native-paper";
-import type { TextInputProps } from "react-native-paper";
-import { View, ViewStyle } from "react-native";
-import { useState } from "react";
+  TextInputProps as RNTextInputProps,
+  TextInput as RNTextInput,
+  StyleSheet,
+  Animated,
+  View,
+  Text,
+} from "react-native";
+import { useState, useRef, useEffect } from "react";
 
-export type InputProps = Omit<
-  TextInputProps,
-  "mode" | "label" | "value" | "onChangeText"
-> & {
+export interface FloatingLabelTextInputProps extends RNTextInputProps {
+  onChangeText: (text: string) => void;
+  containerStyle?: any;
+  helperText?: string;
+  errorText?: string;
   label: string;
   value: string;
-  onChangeText: (text: string) => void;
-  mode?: "outlined" | "flat";
-  errorText?: string;
-  helperText?: string;
-  leftIcon?: string;
-  rightIcon?: string;
-  onRightIconPress?: () => void;
-  clearable?: boolean;
-  secureToggle?: boolean;
-  outlineRadius?: number;
-  containerStyle?: ViewStyle;
-  testID?: string;
-};
+}
 
-const Input: React.FC<InputProps> = ({
+const FloatingLabelTextInput: React.FC<FloatingLabelTextInputProps> = ({
+  containerStyle,
+  onChangeText,
+  helperText,
+  errorText,
+  onFocus,
+  onBlur,
   label,
   value,
-  onChangeText,
-  mode = "outlined",
-  errorText,
-  helperText,
-  leftIcon,
-  rightIcon,
-  onRightIconPress,
-  clearable = false,
-  secureToggle = false,
-  outlineRadius = 12,
-  containerStyle,
-  testID,
-  accessibilityLabel,
   ...rest
 }) => {
-  const theme = useTheme();
-  const [secureTextEntry, setSecureTextEntry] = useState(true);
   const [isFocused, setIsFocused] = useState(false);
+  const animatedValue = useRef(new Animated.Value(0)).current;
 
-  const effectiveSecureEntry = secureToggle ? secureTextEntry : undefined;
+  const isActive = isFocused || value.length > 0;
 
-  const getRightIcon = () => {
-    if (secureToggle) {
-      return {
-        icon: secureTextEntry ? "eye-off" : "eye",
-        onPress: () => setSecureTextEntry(!secureTextEntry),
-        accessibilityLabel: secureTextEntry ? "Show password" : "Hide password",
-      };
-    }
+  useEffect(() => {
+    Animated.timing(animatedValue, {
+      toValue: isActive ? 1 : 0,
+      useNativeDriver: false,
+      duration: 200,
+    }).start();
+  }, [isActive, animatedValue]);
 
-    if (clearable && value) {
-      return {
-        icon: "close",
-        onPress: () => {
-          onChangeText("");
-          setIsFocused(false);
-          if (rest.onBlur) {
-            rest.onBlur({} as any);
-          }
-        },
-        accessibilityLabel: "Clear input",
-      };
-    }
-
-    if (rightIcon) {
-      return {
-        icon: rightIcon,
-        onPress: onRightIconPress,
-        accessibilityLabel: `Press ${rightIcon} icon`,
-      };
-    }
-
-    return null;
+  const handleFocus = (e: any) => {
+    setIsFocused(true);
+    onFocus?.(e);
   };
 
-  const rightIconProps = getRightIcon();
+  const handleBlur = (e: any) => {
+    setIsFocused(false);
+    onBlur?.(e);
+  };
 
-  const customTheme: Partial<MD3Theme> = {
-    ...theme,
-    roundness: outlineRadius,
+  const labelStyle = {
+    position: "absolute" as const,
+    left: 16,
+    top: animatedValue.interpolate({
+      inputRange: [0, 1],
+      outputRange: [20, 6],
+    }),
+    fontSize: animatedValue.interpolate({
+      inputRange: [0, 1],
+      outputRange: [16, 12],
+    }),
+    color: animatedValue.interpolate({
+      inputRange: [0, 1],
+      outputRange: ["#666", "#333"],
+    }),
+    zIndex: 1,
   };
 
   return (
-    <View style={containerStyle} testID={testID}>
-      <TextInput
-        mode={mode}
-        label={label}
-        value={value}
-        onChangeText={onChangeText}
-        onFocus={(e) => {
-          setIsFocused(true);
-          if (rest.onFocus) rest.onFocus(e);
-        }}
-        onBlur={(e) => {
-          setIsFocused(false);
-          if (rest.onBlur) rest.onBlur(e);
-        }}
-        error={!!errorText}
-        secureTextEntry={effectiveSecureEntry}
-        outlineStyle={{
-          borderRadius: outlineRadius,
-        }}
-        theme={customTheme}
-        left={
-          leftIcon ? (
-            <TextInput.Icon
-              icon={leftIcon}
-              accessibilityLabel={`${leftIcon} icon`}
-              accessibilityRole="button"
-            />
-          ) : undefined
-        }
-        right={
-          rightIconProps ? (
-            <TextInput.Icon
-              icon={rightIconProps.icon}
-              onPress={rightIconProps.onPress}
-              accessibilityLabel={rightIconProps.accessibilityLabel}
-              accessibilityRole="button"
-            />
-          ) : undefined
-        }
-        accessibilityLabel={accessibilityLabel || label}
-        testID={testID ? `${testID}-input` : undefined}
-        {...rest}
-      />
+    <View style={[styles.container, containerStyle]}>
+      <View style={styles.inputContainer}>
+        <Animated.Text style={labelStyle}>{label}</Animated.Text>
+        <RNTextInput
+          onChangeText={onChangeText}
+          style={styles.textInput}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          placeholder=""
+          value={value}
+          {...rest}
+        />
+      </View>
 
-      {errorText && (
-        <HelperText
-          type="error"
-          visible={!!errorText}
-          testID={testID ? `${testID}-error` : undefined}
-        >
-          {errorText}
-        </HelperText>
-      )}
+      {errorText && <Text style={styles.errorText}>{errorText}</Text>}
 
       {!errorText && helperText && (
-        <HelperText
-          type="info"
-          visible={!!helperText}
-          testID={testID ? `${testID}-helper` : undefined}
-        >
-          {helperText}
-        </HelperText>
+        <Text style={styles.helperText}>{helperText}</Text>
       )}
     </View>
   );
 };
 
-export { Input as TextInput };
+const styles = StyleSheet.create({
+  container: {
+    position: "relative",
+    marginVertical: 8,
+  },
+  inputContainer: {
+    backgroundColor: "#7878801F",
+    justifyContent: "center",
+    position: "relative",
+    borderRadius: 12,
+    minHeight: 56,
+  },
+  textInput: {
+    paddingHorizontal: 16,
+    paddingBottom: 10,
+    paddingTop: 26,
+    fontSize: 16,
+    color: "#000",
+  },
+  errorText: {
+    position: "absolute",
+    color: "#FF3B30",
+    left: 12,
+    bottom: -14,
+    fontSize: 12,
+  },
+  helperText: {
+    color: "#666",
+    marginLeft: 16,
+    fontSize: 12,
+    marginTop: 4,
+  },
+});
+
+export { FloatingLabelTextInput as TextInput };

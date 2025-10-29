@@ -163,7 +163,6 @@ export default function ClientRegStep3() {
                     field.onChange(text);
                   }}
                   errorText={fieldState.error?.message}
-                  secureToggle
                   autoCapitalize="none"
                   autoCorrect={false}
                 />
@@ -267,7 +266,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   formContainer: {
-    gap: 16,
     marginTop: 8,
   },
   validationContainer: {

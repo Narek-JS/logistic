@@ -1,8 +1,8 @@
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import { Provider as ReduxProvider } from "react-redux";
 import { SplashScreen, Stack } from "expo-router";
 import { useUser } from "@/hooks/useUser";
-import { Provider } from "react-redux";
 import { store } from "@/store/store";
 import { useFonts } from "expo-font";
 import { useEffect } from "react";
@@ -33,7 +33,7 @@ export default function RootLayout() {
   }
 
   return (
-    <Provider store={store}>
+    <ReduxProvider store={store}>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <BottomSheetModalProvider>
           <Stack>
@@ -51,6 +51,6 @@ export default function RootLayout() {
           </Stack>
         </BottomSheetModalProvider>
       </GestureHandlerRootView>
-    </Provider>
+    </ReduxProvider>
   );
 }
