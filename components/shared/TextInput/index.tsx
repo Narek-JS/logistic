@@ -155,9 +155,9 @@ const styles = StyleSheet.create({
   errorText: {
     position: "absolute",
     color: "#FF3B30",
-    left: 12,
-    bottom: -14,
     fontSize: 12,
+    bottom: -15,
+    left: 12,
   },
   helperText: {
     color: "#666",
