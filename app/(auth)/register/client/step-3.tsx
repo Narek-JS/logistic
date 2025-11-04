@@ -6,6 +6,8 @@ import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FontAwesome } from "@expo/vector-icons";
 import { Stack, useRouter } from "expo-router";
+import { useAppDispatch } from "@/store/hooks";
+import { setRole } from "@/store/auth/slice";
 import { useLocale } from "@/hooks/useLocal";
 import { Colors } from "@/constants/Colors";
 import { Text } from "@/components/ui";
@@ -38,6 +40,7 @@ const validationSchema = yup.object().shape({
 });
 
 export default function ClientRegStep3() {
+  const dispatch = useAppDispatch();
   const router = useRouter();
   const { t } = useLocale();
   const [password, setPassword] = useState("");
@@ -60,8 +63,8 @@ export default function ClientRegStep3() {
     defaultValues: {
       firstName: "",
       surename: "",
-      email: "",
       password: "",
+      email: "",
     },
   });
 
@@ -76,8 +79,8 @@ export default function ClientRegStep3() {
     email: string;
     password: string;
   }) => {
-    // Navigate to client profile or dashboard
-    router.push("/(client)/profile");
+    dispatch(setRole({ role: "client" }));
+    // router.push("/(client)/profile");
   };
 
   const isPasswordValid = Object.values(passwordValidation).every(Boolean);

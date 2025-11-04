@@ -1,4 +1,3 @@
-// app/(client)/index.tsx  (Client Home Screen)
 import { View, Text } from "react-native";
 
 export default function ClientHomeScreen() {
