@@ -2,6 +2,7 @@ import { TouchableOpacity, StyleSheet, ScrollView, View } from "react-native";
 import { ButtonPrimary, ButtonSecondary } from "@/components/ui/Buttons";
 import { TermsAndPrivacy } from "@/components/TermsAndPrivacy";
 import { setErrorsFields } from "@/utils/form/errorFields";
+import { showMessage } from "react-native-flash-message";
 import { PhoneNumberInput } from "@/components/shared";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -39,18 +40,25 @@ export default function ClientPhoneStep() {
 
   const onSubmit = async ({ phone }: { phone: string }) => {
     const phoneResponse = await phoneMutation({ phone });
-    if (phoneResponse.data) {
-    }
 
     if (phoneResponse.data?.message) {
-      // alert --> "A verification code has been sent to your phone". message by toast message.
-
+      showMessage({
+        message: "A verification code has been sent to your phone",
+        type: "info",
+      });
       router.push("/(auth)/register/client/step-2");
-    } else if (phoneResponse.error && "status" in phoneResponse.error) {
-      const errorResponse = phoneResponse.error.data as any;
+    } else if ((phoneResponse.error as any).status === 422) {
+      const errorResponse = (phoneResponse.error as any).data;
       setErrorsFields(form, errorResponse as IError);
     } else {
-      // alert --> "Could not send verification code. Please try again." message by toast message.
+      const message =
+        (phoneResponse.error as any).data.message ||
+        "Could not send verification code. Please try again.";
+
+      showMessage({
+        message: message,
+        type: "danger",
+      });
     }
   };
 

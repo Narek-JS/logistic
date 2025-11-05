@@ -9,6 +9,7 @@ import { useFonts } from "expo-font";
 import { useEffect } from "react";
 
 import CustomSplashScreen from "../components/SplashScreen";
+import FlashMessage from "react-native-flash-message";
 
 import "react-native-reanimated";
 
@@ -57,6 +58,7 @@ export default function RootLayout() {
       <GestureHandlerRootView style={{ flex: 1 }}>
         <BottomSheetModalProvider>
           <AppNavigation />
+          <FlashMessage position="bottom" />
         </BottomSheetModalProvider>
       </GestureHandlerRootView>
     </ReduxProvider>
