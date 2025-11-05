@@ -1,3 +1,11 @@
+export interface PhoneRequest {
+  phone: string;
+}
+
+export type PhoneResponse = {
+  message: string;
+};
+
 export interface User {
   is_activated: boolean;
   first_name: string;

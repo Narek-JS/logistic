@@ -1,6 +1,7 @@
 import { TouchableOpacity, StyleSheet, ScrollView, View } from "react-native";
 import { ButtonPrimary, ButtonSecondary } from "@/components/ui/Buttons";
 import { TermsAndPrivacy } from "@/components/TermsAndPrivacy";
+import { setErrorsFields } from "@/utils/form/errorFields";
 import { PhoneNumberInput } from "@/components/shared";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -11,6 +12,7 @@ import { Stack, useRouter } from "expo-router";
 import { useLocale } from "@/hooks/useLocal";
 import { Colors } from "@/constants/Colors";
 import { Text } from "@/components/ui";
+import { IError } from "@/store/types";
 import * as yup from "yup";
 
 const validationSchema = yup.object().shape({
@@ -23,43 +25,38 @@ export default function ClientPhoneStep() {
 
   const [phoneMutation] = usePhoneMutation();
 
-  const {
-    formState: { isValid, errors },
-    handleSubmit,
-    control,
-    setError,
-  } = useForm({
+  const form = useForm({
     resolver: yupResolver(validationSchema),
     defaultValues: { phone: "" },
     mode: "onChange",
   });
 
-  const onSubmit = async (data: { phone: string }) => {
-    const phoneResponse = await phoneMutation({
-      phone: data.phone,
-    });
+  const {
+    formState: { isValid, errors },
+    handleSubmit,
+    control,
+  } = form;
 
-    console.log("phoneResponse.data --> ", phoneResponse);
-    // 200 {"data": {"message": "A verification code has been sent to your phone."}}
-    // 400 {"error": {"data": {"message": "Could not send verification code. Please try again."}, "status": 400}}
-    // 422 {"error": {"data": {"errors": [Object], "message": "The phone field format is invalid."}, "status": 422}}
-    // 429 {"error": {"data": {"message": "Too many failed attempts. Try again in 1 minute 24 seconds."}, "status": 429}}
-
-    if (phoneResponse?.error?.data?.errors) {
-      setError("phone", {
-        message: phoneResponse.error.data.errors?.phone[0] || "",
-      });
+  const onSubmit = async ({ phone }: { phone: string }) => {
+    const phoneResponse = await phoneMutation({ phone });
+    if (phoneResponse.data) {
     }
 
-    // console.log("phoneResponse.data --> ", phoneResponse.data);
-    router.push("/(auth)/register/client/step-2");
+    if (phoneResponse.data?.message) {
+      // alert --> "A verification code has been sent to your phone". message by toast message.
+
+      router.push("/(auth)/register/client/step-2");
+    } else if (phoneResponse.error && "status" in phoneResponse.error) {
+      const errorResponse = phoneResponse.error.data as any;
+      setErrorsFields(form, errorResponse as IError);
+    } else {
+      // alert --> "Could not send verification code. Please try again." message by toast message.
+    }
   };
 
   const handleYoPhone = () => {
     console.log("YoPhone integration");
   };
-
-  console.log("errors --> ", errors);
 
   return (
     <>

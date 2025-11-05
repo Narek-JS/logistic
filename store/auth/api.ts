@@ -2,21 +2,16 @@ import {
   RegisterResponse,
   RegisterRequest,
   LoginResponse,
+  PhoneResponse,
   LoginRequest,
+  PhoneRequest,
 } from "./types";
 import { setAccessToken } from "./slice";
 import { RTKApi } from "../api";
 
 const extendedApi = RTKApi.injectEndpoints({
   endpoints: (build) => ({
-    register: build.mutation({
-      query: (props) => ({
-        url: "/client/auth/register",
-        method: "POST",
-        body: props,
-      }),
-    }),
-    phone: build.mutation({
+    phone: build.mutation<PhoneResponse, PhoneRequest>({
       query: (props) => ({
         url: "/client/auth/register-phone",
         method: "POST",
@@ -30,7 +25,13 @@ const extendedApi = RTKApi.injectEndpoints({
         body: props,
       }),
     }),
-
+    register: build.mutation<RegisterResponse, RegisterRequest>({
+      query: (props) => ({
+        url: "/client/auth/register",
+        method: "POST",
+        body: props,
+      }),
+    }),
     login: build.mutation<LoginResponse, LoginRequest>({
       query: (props) => ({
         url: "/auth/login",
@@ -39,8 +40,10 @@ const extendedApi = RTKApi.injectEndpoints({
       }),
       async onQueryStarted(_queryArgument, mutationLifeCycleApi) {
         const response = await mutationLifeCycleApi.queryFulfilled;
-        const token = response.data.access_token;
-        mutationLifeCycleApi.dispatch(setAccessToken({ token }));
+        const token = response.data.data?.access_token;
+        if (token) {
+          mutationLifeCycleApi.dispatch(setAccessToken({ token }));
+        }
       },
     }),
 
@@ -60,10 +63,10 @@ const extendedApi = RTKApi.injectEndpoints({
 });
 
 export const {
+  useVerifyCodeMutation,
   useRegisterMutation,
   useLoginMutation,
   usePhoneMutation,
-  useVerifyCodeMutation,
 } = extendedApi;
 
 export default extendedApi;
