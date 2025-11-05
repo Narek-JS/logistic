@@ -1,3 +1,3 @@
-const BASE_URL = "https://api.yo-logistic.com";
+const BASE_URL = "http://10.27.73.125";
 
 export { BASE_URL };

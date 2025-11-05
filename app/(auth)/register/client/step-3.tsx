@@ -1,7 +1,7 @@
 import { TouchableOpacity, StyleSheet, ScrollView, View } from "react-native";
-import { ButtonPrimary } from "@/components/ui/Buttons";
 import { TermsAndPrivacy } from "@/components/TermsAndPrivacy";
 import { TextInput } from "@/components/shared/TextInput";
+import { ButtonPrimary } from "@/components/ui/Buttons";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FontAwesome } from "@expo/vector-icons";
@@ -13,29 +13,30 @@ import { Colors } from "@/constants/Colors";
 import { Text } from "@/components/ui";
 import { useState } from "react";
 import * as yup from "yup";
+import { useRegisterMutation } from "@/store/auth/api";
 
 interface PasswordValidation {
-  minLength: boolean;
   hasUppercase: boolean;
   hasLowercase: boolean;
+  minLength: boolean;
   hasNumber: boolean;
   hasSymbol: boolean;
 }
 
 const validatePassword = (password: string): PasswordValidation => {
   return {
-    minLength: password.length >= 12,
+    hasSymbol: /[!@#$%^&*(),.?":{}|<>]/.test(password),
     hasUppercase: /[A-Z]/.test(password),
     hasLowercase: /[a-z]/.test(password),
+    minLength: password.length >= 12,
     hasNumber: /\d/.test(password),
-    hasSymbol: /[!@#$%^&*(),.?":{}|<>]/.test(password),
   };
 };
 
 const validationSchema = yup.object().shape({
-  firstName: yup.string().required(),
-  surename: yup.string().required(),
   email: yup.string().email().required(),
+  firstName: yup.string().required(),
+  lastName: yup.string().required(),
   password: yup.string().required(),
 });
 
@@ -46,23 +47,25 @@ export default function ClientRegStep3() {
   const [password, setPassword] = useState("");
   const [passwordValidation, setPasswordValidation] =
     useState<PasswordValidation>({
-      minLength: false,
       hasUppercase: false,
       hasLowercase: false,
+      minLength: false,
       hasNumber: false,
       hasSymbol: false,
     });
 
+  const [register] = useRegisterMutation();
+
   const {
-    control,
-    handleSubmit,
     formState: { isValid },
+    handleSubmit,
+    control,
   } = useForm({
     resolver: yupResolver(validationSchema),
     mode: "onChange",
     defaultValues: {
       firstName: "",
-      surename: "",
+      lastName: "",
       password: "",
       email: "",
     },
@@ -73,13 +76,19 @@ export default function ClientRegStep3() {
     setPasswordValidation(validatePassword(text));
   };
 
-  const onSubmit = (data: {
+  const onSubmit = async (data: {
     firstName: string;
-    surename: string;
-    email: string;
     password: string;
+    lastName: string;
+    email: string;
   }) => {
-    dispatch(setRole({ role: "client" }));
+    const res = await register({
+      ...data,
+      token:
+        "b06a85f308fc320ec5e2fc0ebc5b26a5.d1db85b7c58d02a290e16abd67a442031118ffff60d69bd96bfcc4a7e78a1e5e",
+    });
+    console.log("res -->", res);
+    // dispatch(setRole({ role: "client" }));
     // router.push("/(client)/profile");
   };
 
@@ -125,7 +134,7 @@ export default function ClientRegStep3() {
 
           <Controller
             control={control}
-            name="surename"
+            name="lastName"
             render={({ field, fieldState }) => (
               <TextInput
                 label={t("clientRegStep3.surenamePlaceholder")}

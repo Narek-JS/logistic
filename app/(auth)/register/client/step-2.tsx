@@ -23,6 +23,7 @@ import { Colors } from "@/constants/Colors";
 import { Text } from "@/components/ui";
 import { useState } from "react";
 import * as yup from "yup";
+import { useVerifyCodeMutation } from "@/store/auth/api";
 
 const validationSchema = yup.object().shape({
   code: yup
@@ -32,17 +33,19 @@ const validationSchema = yup.object().shape({
     .matches(/^\d+$/, "Code must contain only numbers"),
 });
 
-const verifyCode = async (code: string): Promise<boolean> => {
-  await new Promise((resolve) => setTimeout(resolve, 1500));
+// const verifyCode = async (code: string): Promise<boolean> => {
+//   await new Promise((resolve) => setTimeout(resolve, 1500));
 
-  return code === "1234";
-};
+//   return code === "1234";
+// };
 
 export default function ClientRegStep2() {
   const router = useRouter();
   const { t } = useLocale();
   const [isLoading, setIsLoading] = useState(false);
   const [showError, setShowError] = useState(false);
+
+  const [verifyCode] = useVerifyCodeMutation();
 
   const {
     formState: { errors },
@@ -71,14 +74,18 @@ export default function ClientRegStep2() {
     setIsLoading(true);
     setShowError(false);
 
-    try {
-      const isValid = await verifyCode(data.code);
+    const res = await verifyCode({ code: "593981", phone: "+37498738620" });
 
-      if (isValid) {
-        router.replace("/(auth)/register/client/step-3");
-      } else {
-        setShowError(true);
-      }
+    console.log(res);
+    router.replace("/(auth)/register/client/step-3");
+
+    try {
+      // const isValid = await verifyCode({ code });
+      // if (isValid) {
+      //   router.replace("/(auth)/register/client/step-3");
+      // } else {
+      //   setShowError(true);
+      // }
     } catch {
       setShowError(true);
     } finally {

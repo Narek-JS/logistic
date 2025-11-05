@@ -4,6 +4,7 @@ import { TermsAndPrivacy } from "@/components/TermsAndPrivacy";
 import { PhoneNumberInput } from "@/components/shared";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { usePhoneMutation } from "@/store/auth/api";
 import { FontAwesome } from "@expo/vector-icons";
 import { YoPhoneIcon } from "@/components/Icons";
 import { Stack, useRouter } from "expo-router";
@@ -13,30 +14,52 @@ import { Text } from "@/components/ui";
 import * as yup from "yup";
 
 const validationSchema = yup.object().shape({
-  phoneNumber: yup.string().required(),
+  phone: yup.string().required(),
 });
 
 export default function ClientPhoneStep() {
   const router = useRouter();
   const { t } = useLocale();
 
+  const [phoneMutation] = usePhoneMutation();
+
   const {
-    control,
+    formState: { isValid, errors },
     handleSubmit,
-    formState: { isValid },
+    control,
+    setError,
   } = useForm({
     resolver: yupResolver(validationSchema),
+    defaultValues: { phone: "" },
     mode: "onChange",
-    defaultValues: { phoneNumber: "" },
   });
 
-  const onSubmit = (data: { phoneNumber: string }) => {
+  const onSubmit = async (data: { phone: string }) => {
+    const phoneResponse = await phoneMutation({
+      phone: data.phone,
+    });
+
+    console.log("phoneResponse.data --> ", phoneResponse);
+    // 200 {"data": {"message": "A verification code has been sent to your phone."}}
+    // 400 {"error": {"data": {"message": "Could not send verification code. Please try again."}, "status": 400}}
+    // 422 {"error": {"data": {"errors": [Object], "message": "The phone field format is invalid."}, "status": 422}}
+    // 429 {"error": {"data": {"message": "Too many failed attempts. Try again in 1 minute 24 seconds."}, "status": 429}}
+
+    if (phoneResponse?.error?.data?.errors) {
+      setError("phone", {
+        message: phoneResponse.error.data.errors?.phone[0] || "",
+      });
+    }
+
+    // console.log("phoneResponse.data --> ", phoneResponse.data);
     router.push("/(auth)/register/client/step-2");
   };
 
   const handleYoPhone = () => {
     console.log("YoPhone integration");
   };
+
+  console.log("errors --> ", errors);
 
   return (
     <>
@@ -64,7 +87,7 @@ export default function ClientPhoneStep() {
         <View style={{ gap: 5 }}>
           <Controller
             control={control}
-            name="phoneNumber"
+            name="phone"
             render={({ field, fieldState }) => (
               <PhoneNumberInput
                 onChange={field.onChange}
@@ -72,7 +95,7 @@ export default function ClientPhoneStep() {
                   "clientPhoneVerification.phoneNumberPlaceholder"
                 )}
                 value={field.value}
-                error={fieldState.error?.message}
+                error={fieldState.error?.message || errors.phone?.message}
                 defaultCountry="AM"
               />
             )}
