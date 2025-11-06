@@ -1,3 +1,12 @@
+// General Types.
+interface Client {
+  id: number;
+  phone: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  isEmailVerified: boolean;
+}
 export interface PhoneRequest {
   phone: string;
 }
@@ -14,14 +23,19 @@ export type VerifyCodeResponse = {
   message: string;
   token: string;
 };
-export interface User {
-  is_activated: boolean;
-  first_name: string;
-  last_name: string;
-  email: string;
-}
 
-export type RegisterResponse = any;
-export type RegisterRequest = any;
+export interface RegisterRequest {
+  passwordConfirmation: string;
+  firstName: string;
+  lastName: string;
+  password: string;
+  email: string;
+  token: string;
+}
+export type RegisterResponse = {
+  token: string;
+  client: Client;
+};
+
 export type LoginResponse = any;
 export type LoginRequest = any;

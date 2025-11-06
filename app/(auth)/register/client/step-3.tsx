@@ -1,5 +1,4 @@
 import { TouchableOpacity, StyleSheet, ScrollView, View } from "react-native";
-import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { TermsAndPrivacy } from "@/components/TermsAndPrivacy";
 import { setErrorsFields } from "@/utils/form/errorFields";
 import { TextInput } from "@/components/shared/TextInput";
@@ -9,12 +8,14 @@ import { useRegisterMutation } from "@/store/auth/api";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FontAwesome } from "@expo/vector-icons";
+import { Stack, useRouter } from "expo-router";
 import { useLocale } from "@/hooks/useLocal";
 import { setRole } from "@/store/auth/slice";
 import { Colors } from "@/constants/Colors";
 import { useDispatch } from "react-redux";
 import { Text } from "@/components/ui";
 import { IError } from "@/store/types";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as yup from "yup";
 
 interface PasswordValidation {
@@ -48,7 +49,6 @@ export default function ClientRegStep3() {
   const dispatch = useDispatch();
   const router = useRouter();
   const { t } = useLocale();
-  const { token } = useLocalSearchParams();
   const [register, { isLoading }] = useRegisterMutation();
 
   const form = useForm({
@@ -73,13 +73,15 @@ export default function ClientRegStep3() {
     email: string;
   }) => {
     try {
+      const token = (await AsyncStorage.getItem("ape-ape")) || "";
       const res = await register({ ...data, token });
 
-      if (res.data?.message) {
+      if (res.data?.token) {
         showMessage({
           message: "Account created successfully",
           type: "info",
         });
+
         dispatch(setRole({ role: "client" }));
         router.push("/(client)/profile");
       } else if ((res.error as any).status === 422) {

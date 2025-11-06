@@ -19,6 +19,8 @@ import { useLocale } from "@/hooks/useLocal";
 import { Colors } from "@/constants/Colors";
 import { Text } from "@/components/ui";
 import { IError } from "@/store/types";
+
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as yup from "yup";
 
 const validationSchema = yup.object().shape({
@@ -68,6 +70,9 @@ export default function ClientRegStep2() {
           message: "Code verified successfully",
           type: "info",
         });
+
+        await AsyncStorage.setItem("ape-ape", res.data.token);
+
         router.push({
           pathname: "/(auth)/register/client/step-3",
           params: { token: res.data.token },

@@ -1,15 +1,15 @@
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
-import { Provider as ReduxProvider } from "react-redux";
 import { selectAuthRole } from "@/store/auth/selectors";
 import { SplashScreen, Stack } from "expo-router";
 import { useAppSelector } from "@/store/hooks";
-import { store } from "@/store/store";
+import { use, useEffect } from "react";
 import { useFonts } from "expo-font";
-import { useEffect } from "react";
 
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import CustomSplashScreen from "../components/SplashScreen";
 import FlashMessage from "react-native-flash-message";
+import StoreProvider from "@/store/Provider";
 
 import "react-native-reanimated";
 
@@ -37,11 +37,14 @@ function AppNavigation() {
   );
 }
 
+const tokenStream = AsyncStorage.getItem("ape-ape");
+
 export default function RootLayout() {
   const [fontsLoading, fontsError] = useFonts({
     "open-sans-bold": require("@/assets/fonts/OpenSans-Bold.ttf"),
     "open-sans": require("@/assets/fonts/OpenSans-Regular.ttf"),
   });
+  const token = use(tokenStream);
 
   useEffect(() => {
     if (fontsLoading || fontsError) {
@@ -54,13 +57,13 @@ export default function RootLayout() {
   }
 
   return (
-    <ReduxProvider store={store}>
+    <StoreProvider preloadedState={{ auth: { token, role: null } }}>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <BottomSheetModalProvider>
           <AppNavigation />
           <FlashMessage position="bottom" />
         </BottomSheetModalProvider>
       </GestureHandlerRootView>
-    </ReduxProvider>
+    </StoreProvider>
   );
 }
