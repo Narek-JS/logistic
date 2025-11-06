@@ -38,6 +38,10 @@ const validationSchema = yup.object().shape({
   firstName: yup.string().required(),
   lastName: yup.string().required(),
   password: yup.string().required(),
+  passwordConfirmation: yup
+    .string()
+    .required()
+    .oneOf([yup.ref("password")], "Passwords must match"),
 });
 
 export default function ClientRegStep3() {
@@ -51,6 +55,7 @@ export default function ClientRegStep3() {
     resolver: yupResolver(validationSchema),
     mode: "onChange",
     defaultValues: {
+      passwordConfirmation: "",
       firstName: "",
       lastName: "",
       password: "",
@@ -58,21 +63,17 @@ export default function ClientRegStep3() {
     },
   });
 
-  const {
-    formState: { isValid },
-    handleSubmit,
-    control,
-    watch,
-  } = form;
+  const { handleSubmit, control, watch } = form;
 
   const onSubmit = async (data: {
+    passwordConfirmation: string;
     firstName: string;
     password: string;
     lastName: string;
     email: string;
   }) => {
     try {
-      const res = await register({ ...data, email: "something", token });
+      const res = await register({ ...data, token });
 
       if (res.data?.message) {
         showMessage({
@@ -102,7 +103,6 @@ export default function ClientRegStep3() {
 
   const password = watch("password");
   const passwordValidation = validatePassword(password || "");
-  const isPasswordValid = Object.values(passwordValidation).every(Boolean);
 
   return (
     <>
@@ -187,6 +187,22 @@ export default function ClientRegStep3() {
                   value={field.value}
                 />
 
+                <Controller
+                  control={control}
+                  name="passwordConfirmation"
+                  render={({ field, fieldState }) => (
+                    <TextInput
+                      errorText={fieldState.error?.message}
+                      onChangeText={field.onChange}
+                      label={"Confirm password"}
+                      secureTextEntry={true}
+                      autoCapitalize="none"
+                      autoCorrect={false}
+                      value={field.value}
+                    />
+                  )}
+                />
+
                 {/* Password Validation Requirements */}
                 <View style={styles.validationContainer}>
                   <Text style={styles.validationTitle}>
@@ -220,7 +236,6 @@ export default function ClientRegStep3() {
           />
 
           <ButtonPrimary
-            disabled={!isValid || !isPasswordValid}
             onPress={handleSubmit(onSubmit)}
             style={styles.createButton}
             isLoading={isLoading}
@@ -240,23 +255,20 @@ export default function ClientRegStep3() {
   );
 }
 
-const ValidationItem = ({
-  isValid,
-  text,
-}: {
-  isValid: boolean;
-  text: string;
-}) => (
+const ValidationItem = (props: { isValid: boolean; text: string }) => (
   <View style={styles.validationItem}>
     <FontAwesome
+      color={props.isValid ? "#000000" : Colors.inactiveGray}
       name="check"
       size={16}
-      color={isValid ? "#000000" : Colors.inactiveGray}
     />
     <Text
-      style={[styles.validationText, isValid && styles.validationTextValid]}
+      style={[
+        styles.validationText,
+        props.isValid && styles.validationTextValid,
+      ]}
     >
-      {text}
+      {props.text}
     </Text>
   </View>
 );
