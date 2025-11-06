@@ -1,16 +1,20 @@
 import { TouchableOpacity, StyleSheet, ScrollView, View } from "react-native";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { TermsAndPrivacy } from "@/components/TermsAndPrivacy";
+import { setErrorsFields } from "@/utils/form/errorFields";
 import { TextInput } from "@/components/shared/TextInput";
+import { showMessage } from "react-native-flash-message";
 import { ButtonPrimary } from "@/components/ui/Buttons";
 import { useRegisterMutation } from "@/store/auth/api";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FontAwesome } from "@expo/vector-icons";
-import { Stack, useRouter } from "expo-router";
 import { useLocale } from "@/hooks/useLocal";
+import { setRole } from "@/store/auth/slice";
 import { Colors } from "@/constants/Colors";
+import { useDispatch } from "react-redux";
 import { Text } from "@/components/ui";
-import { useState } from "react";
+import { IError } from "@/store/types";
 import * as yup from "yup";
 
 interface PasswordValidation {
@@ -21,15 +25,13 @@ interface PasswordValidation {
   hasSymbol: boolean;
 }
 
-const validatePassword = (password: string): PasswordValidation => {
-  return {
-    hasSymbol: /[!@#$%^&*(),.?":{}|<>]/.test(password),
-    hasUppercase: /[A-Z]/.test(password),
-    hasLowercase: /[a-z]/.test(password),
-    minLength: password.length >= 12,
-    hasNumber: /\d/.test(password),
-  };
-};
+const validatePassword = (password: string): PasswordValidation => ({
+  hasSymbol: /[!@#$%^&*(),.?":{}|<>]/.test(password),
+  hasUppercase: /[A-Z]/.test(password),
+  hasLowercase: /[a-z]/.test(password),
+  minLength: password.length >= 12,
+  hasNumber: /\d/.test(password),
+});
 
 const validationSchema = yup.object().shape({
   email: yup.string().email().required(),
@@ -39,25 +41,13 @@ const validationSchema = yup.object().shape({
 });
 
 export default function ClientRegStep3() {
+  const dispatch = useDispatch();
   const router = useRouter();
   const { t } = useLocale();
-  const [password, setPassword] = useState("");
-  const [passwordValidation, setPasswordValidation] =
-    useState<PasswordValidation>({
-      hasUppercase: false,
-      hasLowercase: false,
-      minLength: false,
-      hasNumber: false,
-      hasSymbol: false,
-    });
+  const { token } = useLocalSearchParams();
+  const [register, { isLoading }] = useRegisterMutation();
 
-  const [register] = useRegisterMutation();
-
-  const {
-    formState: { isValid },
-    handleSubmit,
-    control,
-  } = useForm({
+  const form = useForm({
     resolver: yupResolver(validationSchema),
     mode: "onChange",
     defaultValues: {
@@ -68,10 +58,12 @@ export default function ClientRegStep3() {
     },
   });
 
-  const handlePasswordChange = (text: string) => {
-    setPassword(text);
-    setPasswordValidation(validatePassword(text));
-  };
+  const {
+    formState: { isValid },
+    handleSubmit,
+    control,
+    watch,
+  } = form;
 
   const onSubmit = async (data: {
     firstName: string;
@@ -79,16 +71,37 @@ export default function ClientRegStep3() {
     lastName: string;
     email: string;
   }) => {
-    const res = await register({
-      ...data,
-      token:
-        "b06a85f308fc320ec5e2fc0ebc5b26a5.d1db85b7c58d02a290e16abd67a442031118ffff60d69bd96bfcc4a7e78a1e5e",
-    });
-    console.log("res -->", res);
-    // dispatch(setRole({ role: "client" }));
-    // router.push("/(client)/profile");
+    try {
+      const res = await register({ ...data, email: "something", token });
+
+      if (res.data?.message) {
+        showMessage({
+          message: "Account created successfully",
+          type: "info",
+        });
+        dispatch(setRole({ role: "client" }));
+        router.push("/(client)/profile");
+      } else if ((res.error as any).status === 422) {
+        const errorResponse = (res.error as any).data;
+        setErrorsFields(form, errorResponse as IError);
+      } else {
+        const message =
+          (res.error as any).data.message ||
+          "Could not create account. Please try again.";
+
+        showMessage({ message, type: "danger" });
+      }
+    } catch (error) {
+      console.log("verify code error --> ", error);
+      showMessage({
+        message: "Could not create account. Please try again.",
+        type: "danger",
+      });
+    }
   };
 
+  const password = watch("password");
+  const passwordValidation = validatePassword(password || "");
   const isPasswordValid = Object.values(passwordValidation).every(Boolean);
 
   return (
@@ -165,16 +178,13 @@ export default function ClientRegStep3() {
             render={({ field, fieldState }) => (
               <>
                 <TextInput
-                  onChangeText={(text: string) => {
-                    handlePasswordChange(text);
-                    field.onChange(text);
-                  }}
+                  onChangeText={field.onChange}
                   errorText={fieldState.error?.message}
                   label={t("clientRegStep3.password")}
                   secureTextEntry={true}
                   autoCapitalize="none"
                   autoCorrect={false}
-                  value={password}
+                  value={field.value}
                 />
 
                 {/* Password Validation Requirements */}
@@ -213,6 +223,7 @@ export default function ClientRegStep3() {
             disabled={!isValid || !isPasswordValid}
             onPress={handleSubmit(onSubmit)}
             style={styles.createButton}
+            isLoading={isLoading}
           >
             {t("clientRegStep3.createAccountButton")}
           </ButtonPrimary>
