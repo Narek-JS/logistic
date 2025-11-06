@@ -2,18 +2,16 @@ import { TouchableOpacity, StyleSheet, ScrollView, View } from "react-native";
 import { TermsAndPrivacy } from "@/components/TermsAndPrivacy";
 import { TextInput } from "@/components/shared/TextInput";
 import { ButtonPrimary } from "@/components/ui/Buttons";
+import { useRegisterMutation } from "@/store/auth/api";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FontAwesome } from "@expo/vector-icons";
 import { Stack, useRouter } from "expo-router";
-import { useAppDispatch } from "@/store/hooks";
-import { setRole } from "@/store/auth/slice";
 import { useLocale } from "@/hooks/useLocal";
 import { Colors } from "@/constants/Colors";
 import { Text } from "@/components/ui";
 import { useState } from "react";
 import * as yup from "yup";
-import { useRegisterMutation } from "@/store/auth/api";
 
 interface PasswordValidation {
   hasUppercase: boolean;
@@ -41,7 +39,6 @@ const validationSchema = yup.object().shape({
 });
 
 export default function ClientRegStep3() {
-  const dispatch = useAppDispatch();
   const router = useRouter();
   const { t } = useLocale();
   const [password, setPassword] = useState("");
@@ -124,10 +121,10 @@ export default function ClientRegStep3() {
             render={({ field, fieldState }) => (
               <TextInput
                 label={t("clientRegStep3.firstNamePlaceholder")}
-                value={field.value}
-                onChangeText={field.onChange}
                 errorText={fieldState.error?.message}
+                onChangeText={field.onChange}
                 autoCapitalize="words"
+                value={field.value}
               />
             )}
           />
@@ -138,10 +135,10 @@ export default function ClientRegStep3() {
             render={({ field, fieldState }) => (
               <TextInput
                 label={t("clientRegStep3.surenamePlaceholder")}
-                value={field.value}
-                onChangeText={field.onChange}
                 errorText={fieldState.error?.message}
+                onChangeText={field.onChange}
                 autoCapitalize="words"
+                value={field.value}
               />
             )}
           />
@@ -152,11 +149,11 @@ export default function ClientRegStep3() {
             render={({ field, fieldState }) => (
               <TextInput
                 label={t("clientRegStep3.emailPlaceholder")}
-                value={field.value}
-                onChangeText={field.onChange}
                 errorText={fieldState.error?.message}
+                onChangeText={field.onChange}
                 keyboardType="email-address"
                 autoCapitalize="none"
+                value={field.value}
                 autoCorrect={false}
               />
             )}
@@ -168,16 +165,16 @@ export default function ClientRegStep3() {
             render={({ field, fieldState }) => (
               <>
                 <TextInput
-                  secureTextEntry={true}
-                  label={t("clientRegStep3.password")}
-                  value={password}
                   onChangeText={(text: string) => {
                     handlePasswordChange(text);
                     field.onChange(text);
                   }}
                   errorText={fieldState.error?.message}
+                  label={t("clientRegStep3.password")}
+                  secureTextEntry={true}
                   autoCapitalize="none"
                   autoCorrect={false}
+                  value={password}
                 />
 
                 {/* Password Validation Requirements */}
@@ -187,24 +184,24 @@ export default function ClientRegStep3() {
                   </Text>
                   <View style={styles.validationList}>
                     <ValidationItem
-                      isValid={passwordValidation.minLength}
                       text={t("clientRegStep3.passwordValidation.min12")}
+                      isValid={passwordValidation.minLength}
                     />
                     <ValidationItem
-                      isValid={passwordValidation.hasUppercase}
                       text={t("clientRegStep3.passwordValidation.uppercase")}
+                      isValid={passwordValidation.hasUppercase}
                     />
                     <ValidationItem
-                      isValid={passwordValidation.hasLowercase}
                       text={t("clientRegStep3.passwordValidation.lowercase")}
+                      isValid={passwordValidation.hasLowercase}
                     />
                     <ValidationItem
-                      isValid={passwordValidation.hasNumber}
                       text={t("clientRegStep3.passwordValidation.number")}
+                      isValid={passwordValidation.hasNumber}
                     />
                     <ValidationItem
-                      isValid={passwordValidation.hasSymbol}
                       text={t("clientRegStep3.passwordValidation.symbol")}
+                      isValid={passwordValidation.hasSymbol}
                     />
                   </View>
                 </View>
@@ -213,9 +210,9 @@ export default function ClientRegStep3() {
           />
 
           <ButtonPrimary
-            style={styles.createButton}
             disabled={!isValid || !isPasswordValid}
             onPress={handleSubmit(onSubmit)}
+            style={styles.createButton}
           >
             {t("clientRegStep3.createAccountButton")}
           </ButtonPrimary>
@@ -223,8 +220,8 @@ export default function ClientRegStep3() {
 
         <View style={styles.bottomSection}>
           <TermsAndPrivacy
-            termsCallback={() => console.log("Terms pressed")}
             privacyCallback={() => console.log("Privacy pressed")}
+            termsCallback={() => console.log("Terms pressed")}
           />
         </View>
       </ScrollView>
