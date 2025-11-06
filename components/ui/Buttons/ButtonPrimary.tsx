@@ -1,5 +1,6 @@
 import {
   TouchableOpacityProps,
+  ActivityIndicator,
   TouchableOpacity,
   StyleSheet,
   TextProps,
@@ -12,6 +13,7 @@ import { Text } from "@/components/ui";
 interface ButtonPrimaryProps extends TouchableOpacityProps {
   textStyle?: StyleProp<TextStyle>;
   textProps?: TextProps;
+  isLoading?: boolean;
 }
 
 const ButtonPrimary: React.FC<ButtonPrimaryProps> = ({
@@ -19,16 +21,19 @@ const ButtonPrimary: React.FC<ButtonPrimaryProps> = ({
   textStyle,
   textProps,
   children,
+  isLoading,
+  disabled,
   ...touchableOpacityProps
 }) => {
   return (
     <TouchableOpacity
       style={[styles.primaryButton, style]}
       activeOpacity={0.8}
+      disabled={disabled || isLoading}
       {...touchableOpacityProps}
     >
       <Text style={[styles.primaryButtonText, textStyle]} {...textProps}>
-        {children}
+        {isLoading ? <ActivityIndicator color="#FFFFFF" /> : children}
       </Text>
     </TouchableOpacity>
   );

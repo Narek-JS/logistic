@@ -1,51 +1,47 @@
 import {
-  ActivityIndicator,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-  View,
-} from "react-native";
-import {
   useClearByFocusCell,
   useBlurOnFulfill,
   CodeField,
   Cursor,
 } from "react-native-confirmation-code-field";
+import { TouchableOpacity, StyleSheet, ScrollView, View } from "react-native";
 import { ButtonPrimary, ButtonSecondary } from "@/components/ui/Buttons";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { TermsAndPrivacy } from "@/components/TermsAndPrivacy";
+import { setErrorsFields } from "@/utils/form/errorFields";
+import { showMessage } from "react-native-flash-message";
+import { useVerifyCodeMutation } from "@/store/auth/api";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FontAwesome } from "@expo/vector-icons";
 import { YoPhoneIcon } from "@/components/Icons";
-import { Stack, useRouter } from "expo-router";
 import { useLocale } from "@/hooks/useLocal";
 import { Colors } from "@/constants/Colors";
 import { Text } from "@/components/ui";
-import { useState } from "react";
+import { IError } from "@/store/types";
 import * as yup from "yup";
-import { useVerifyCodeMutation } from "@/store/auth/api";
 
 const validationSchema = yup.object().shape({
   code: yup
     .string()
     .required("Code is required")
-    .length(4, "Code must be 4 digits")
+    .length(6, "Code must be 6 digits")
     .matches(/^\d+$/, "Code must contain only numbers"),
 });
 
-// const verifyCode = async (code: string): Promise<boolean> => {
-//   await new Promise((resolve) => setTimeout(resolve, 1500));
-
-//   return code === "1234";
-// };
-
 export default function ClientRegStep2() {
   const router = useRouter();
-  const { t } = useLocale();
-  const [isLoading, setIsLoading] = useState(false);
-  const [showError, setShowError] = useState(false);
 
-  const [verifyCode] = useVerifyCodeMutation();
+  const { phone } = useLocalSearchParams();
+  const { t } = useLocale();
+
+  const [verifyCode, { isLoading }] = useVerifyCodeMutation();
+
+  const form = useForm({
+    resolver: yupResolver(validationSchema),
+    defaultValues: { code: "" },
+    mode: "onChange",
+  });
 
   const {
     formState: { errors },
@@ -53,49 +49,50 @@ export default function ClientRegStep2() {
     setValue,
     control,
     watch,
-  } = useForm({
-    resolver: yupResolver(validationSchema),
-    mode: "onChange",
-    defaultValues: { code: "" },
-  });
+  } = form;
 
   const code = watch("code");
+  const ref = useBlurOnFulfill({ value: code, cellCount: 6 });
 
-  const ref = useBlurOnFulfill({ value: code, cellCount: 4 });
   const [props, getCellOnLayoutHandler] = useClearByFocusCell({
+    setValue: (val) => setValue("code", val, { shouldValidate: true }),
     value: code,
-    setValue: (val) => {
-      setValue("code", val, { shouldValidate: true });
-      setShowError(false);
-    },
   });
 
-  const onSubmit = async (data: { code: string }) => {
-    setIsLoading(true);
-    setShowError(false);
-
-    const res = await verifyCode({ code: "593981", phone: "+37498738620" });
-
-    console.log(res);
-    router.replace("/(auth)/register/client/step-3");
-
+  const onSubmit = async ({ code }: { code: string }) => {
     try {
-      // const isValid = await verifyCode({ code });
-      // if (isValid) {
-      //   router.replace("/(auth)/register/client/step-3");
-      // } else {
-      //   setShowError(true);
-      // }
-    } catch {
-      setShowError(true);
-    } finally {
-      setIsLoading(false);
+      const res = await verifyCode({ code, phone: phone.toString() });
+
+      if (res.data?.message) {
+        showMessage({
+          message: "Code verified successfully",
+          type: "info",
+        });
+        router.push({
+          pathname: "/(auth)/register/client/step-3",
+          params: { token: res.data.token },
+        });
+      } else if ((res.error as any).status === 422) {
+        const errorResponse = (res.error as any).data;
+        setErrorsFields(form, errorResponse as IError);
+      } else {
+        const message =
+          (res.error as any).data.message ||
+          "Could not verify code. Please try again.";
+
+        showMessage({ message, type: "danger" });
+      }
+    } catch (error) {
+      console.log("verify code error --> ", error);
+      showMessage({
+        message: "Could not verify code. Please try again.",
+        type: "danger",
+      });
     }
   };
 
   const handleCodeChange = (value: string) => {
     setValue("code", value, { shouldValidate: true });
-    setShowError(false);
   };
 
   const handleYoPhone = () => {};
@@ -136,14 +133,13 @@ export default function ClientRegStep2() {
                   handleCodeChange(val);
                   field.onChange(val);
                 }}
-                cellCount={4}
+                cellCount={6}
                 rootStyle={styles.codeFieldRoot}
                 keyboardType="number-pad"
                 textContentType="oneTimeCode"
                 renderCell={({ index, symbol, isFocused }) => {
                   const hasSymbol = symbol && symbol.length > 0;
-                  const showErrorStyle =
-                    showError || (errors.code && code.length === 4);
+                  const showErrorStyle = errors.code && code.length === 6;
                   return (
                     <View
                       key={index}
@@ -168,25 +164,20 @@ export default function ClientRegStep2() {
             {t("clientPhoneVerification.verificationCode.instruction")}
           </Text>
 
-          {(errors.code || showError) && (
+          {errors.code && (
             <Text style={styles.errorText}>
-              {showError
-                ? t("clientPhoneVerification.verificationCode.invalidCode")
-                : errors.code?.message ||
-                  t("clientPhoneVerification.verificationCode.codeRequired")}
+              {errors.code?.message ||
+                t("clientPhoneVerification.verificationCode.codeRequired")}
             </Text>
           )}
 
           <ButtonPrimary
-            style={styles.verifyButton}
             onPress={handleSubmit(onSubmit)}
-            disabled={code.length !== 4 || isLoading}
+            disabled={code.length !== 6}
+            style={styles.verifyButton}
+            isLoading={isLoading}
           >
-            {isLoading ? (
-              <ActivityIndicator color="#FFFFFF" />
-            ) : (
-              t("clientPhoneVerification.verificationCode.verifyButton")
-            )}
+            {t("clientPhoneVerification.verificationCode.verifyButton")}
           </ButtonPrimary>
         </View>
 
@@ -202,8 +193,8 @@ export default function ClientRegStep2() {
           </ButtonSecondary>
 
           <TermsAndPrivacy
-            termsCallback={() => console.log("Terms pressed")}
             privacyCallback={() => console.log("Privacy pressed")}
+            termsCallback={() => console.log("Terms pressed")}
           />
         </View>
       </ScrollView>
@@ -244,8 +235,8 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   codeInput: {
-    width: 56,
-    height: 56,
+    width: 46,
+    height: 46,
     borderRadius: 12,
     backgroundColor: Colors.lightGray,
     justifyContent: "center",

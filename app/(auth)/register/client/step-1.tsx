@@ -24,7 +24,7 @@ export default function ClientPhoneStep() {
   const router = useRouter();
   const { t } = useLocale();
 
-  const [phoneMutation] = usePhoneMutation();
+  const [phoneMutation, { isLoading }] = usePhoneMutation();
 
   const form = useForm({
     resolver: yupResolver(validationSchema),
@@ -39,24 +39,32 @@ export default function ClientPhoneStep() {
   } = form;
 
   const onSubmit = async ({ phone }: { phone: string }) => {
-    const phoneResponse = await phoneMutation({ phone });
+    try {
+      const res = await phoneMutation({ phone });
 
-    if (phoneResponse.data?.message) {
-      showMessage({
-        message: "A verification code has been sent to your phone",
-        type: "info",
-      });
-      router.push("/(auth)/register/client/step-2");
-    } else if ((phoneResponse.error as any).status === 422) {
-      const errorResponse = (phoneResponse.error as any).data;
-      setErrorsFields(form, errorResponse as IError);
-    } else {
-      const message =
-        (phoneResponse.error as any).data.message ||
-        "Could not send verification code. Please try again.";
+      if (res.data?.message) {
+        showMessage({
+          message: "A verification code has been sent to your phone",
+          type: "info",
+        });
+        router.push({
+          pathname: "/(auth)/register/client/step-2",
+          params: { phone },
+        });
+      } else if ((res.error as any).status === 422) {
+        const errorResponse = (res.error as any).data;
+        setErrorsFields(form, errorResponse as IError);
+      } else {
+        const message =
+          (res.error as any).data.message ||
+          "Could not send verification code. Please try again.";
 
+        showMessage({ message, type: "danger" });
+      }
+    } catch (error) {
+      console.log("phone error --> ", error);
       showMessage({
-        message: message,
+        message: "Could not send verification code. Please try again.",
         type: "danger",
       });
     }
@@ -106,9 +114,10 @@ export default function ClientPhoneStep() {
             )}
           />
           <ButtonPrimary
-            style={styles.sendCodeButton}
-            disabled={!isValid}
             onPress={handleSubmit(onSubmit)}
+            style={styles.sendCodeButton}
+            isLoading={isLoading}
+            disabled={!isValid}
           >
             {t("clientPhoneVerification.sendCodeButton")}
           </ButtonPrimary>

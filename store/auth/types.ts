@@ -6,6 +6,14 @@ export type PhoneResponse = {
   message: string;
 };
 
+export interface VerifyCodeRequest {
+  code: string;
+  phone: string;
+}
+export type VerifyCodeResponse = {
+  message: string;
+  token: string;
+};
 export interface User {
   is_activated: boolean;
   first_name: string;

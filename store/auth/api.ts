@@ -1,4 +1,6 @@
 import {
+  VerifyCodeResponse,
+  VerifyCodeRequest,
   RegisterResponse,
   RegisterRequest,
   LoginResponse,
@@ -18,7 +20,7 @@ const extendedApi = RTKApi.injectEndpoints({
         body: props,
       }),
     }),
-    verifyCode: build.mutation({
+    verifyCode: build.mutation<VerifyCodeResponse, VerifyCodeRequest>({
       query: (props) => ({
         url: "/client/auth/verify-phone",
         method: "POST",
