@@ -33,7 +33,6 @@ export type ApiError = Api400Error | Api422Error | Api429Error;
 
 export type ApiResponse<TSuccessData> = {
   data?: TSuccessData;
-  error?: ApiError;
 };
 
 // 400 {"error": {"data": {"message": "Could not send verification code. Please try again."}, "status": 400}}

@@ -65,17 +65,17 @@ export default function VendorRegStep2() {
     try {
       const res = await verifyCode({ code, phone: phone.toString() });
 
-      if (res.data?.message) {
+      if (res.data?.data?.message) {
         showMessage({
           message: "Code verified successfully",
           type: "info",
         });
 
-        await AsyncStorage.setItem("ape-ape", res.data.token);
+        await AsyncStorage.setItem("ape-ape", res.data.data.token);
 
         router.push({
           pathname: "/(auth)/register/vendor/step-3",
-          params: { token: res.data.token },
+          params: { token: res.data.data.token },
         });
       } else if ((res.error as any).status === 422) {
         const errorResponse = (res.error as any).data;

@@ -22,6 +22,10 @@ const validationSchema = yup.object().shape({
   firstName: yup.string().required(),
   lastName: yup.string().required(),
   password: yup.string().required(),
+  passwordConfirmation: yup
+    .string()
+    .required()
+    .oneOf([yup.ref("password")], "Passwords must match"),
 });
 
 export default function VendorRegStep3() {
@@ -33,6 +37,7 @@ export default function VendorRegStep3() {
     resolver: yupResolver(validationSchema),
     mode: "onChange",
     defaultValues: {
+      passwordConfirmation: "",
       firstName: "",
       lastName: "",
       password: "",
@@ -42,6 +47,7 @@ export default function VendorRegStep3() {
   const { handleSubmit, control } = form;
 
   const onSubmit = async (data: {
+    passwordConfirmation: string;
     firstName: string;
     password: string;
     lastName: string;
@@ -50,6 +56,8 @@ export default function VendorRegStep3() {
       const token = (await AsyncStorage.getItem("ape-ape")) || "";
       const res = await register({ ...data, token });
 
+      console.log("register res --> ", res);
+
       if (res.data?.token) {
         showMessage({
           message: "Account created successfully",
@@ -57,7 +65,7 @@ export default function VendorRegStep3() {
         });
 
         dispatch(setRole({ role: "vendor" }));
-        router.push("/(vendor)/profile");
+        router.push("/(auth)/register/vendor/documents");
       } else if ((res.error as any).status === 422) {
         const errorResponse = (res.error as any).data;
         setErrorsFields(form, errorResponse as IError);
@@ -133,15 +141,33 @@ export default function VendorRegStep3() {
             control={control}
             name="password"
             render={({ field, fieldState }) => (
-              <TextInput
-                errorText={fieldState.error?.message}
-                label={t("clientRegStep3.password")}
-                onChangeText={field.onChange}
-                secureTextEntry={true}
-                autoCapitalize="none"
-                autoCorrect={false}
-                value={field.value}
-              />
+              <>
+                <TextInput
+                  errorText={fieldState.error?.message}
+                  label={t("clientRegStep3.password")}
+                  onChangeText={field.onChange}
+                  secureTextEntry={true}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  value={field.value}
+                />
+
+                <Controller
+                  control={control}
+                  name="passwordConfirmation"
+                  render={({ field, fieldState }) => (
+                    <TextInput
+                      errorText={fieldState.error?.message}
+                      onChangeText={field.onChange}
+                      label={"Confirm password"}
+                      secureTextEntry={true}
+                      autoCapitalize="none"
+                      autoCorrect={false}
+                      value={field.value}
+                    />
+                  )}
+                />
+              </>
             )}
           />
 

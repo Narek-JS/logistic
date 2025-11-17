@@ -9,18 +9,22 @@ import {
   PhoneRequest,
 } from "./types";
 import { setAccessToken } from "./slice";
+import { ApiResponse } from "../types";
 import { RTKApi } from "../api";
 
 const extendedApi = RTKApi.injectEndpoints({
   endpoints: (build) => ({
-    phoneVendor: build.mutation<PhoneResponse, PhoneRequest>({
+    phoneVendor: build.mutation<ApiResponse<PhoneResponse>, PhoneRequest>({
       query: (props) => ({
         url: "/vendor/auth/register-phone",
         method: "POST",
         body: props,
       }),
     }),
-    verifyCodeVendor: build.mutation<VerifyCodeResponse, VerifyCodeRequest>({
+    verifyCodeVendor: build.mutation<
+      ApiResponse<VerifyCodeResponse>,
+      VerifyCodeRequest
+    >({
       query: (props) => ({
         url: "/vendor/auth/verify-phone",
         method: "POST",
