@@ -26,8 +26,8 @@ function AppNavigation() {
         <Stack.Screen name="(client)" options={{ headerShown: false }} />
       </Stack.Protected>
 
-      <Stack.Protected guard={isLoggedIn && role === "driver"}>
-        <Stack.Screen name="(driver)" options={{ headerShown: false }} />
+      <Stack.Protected guard={isLoggedIn && role === "vendor"}>
+        <Stack.Screen name="(vendor)" options={{ headerShown: false }} />
       </Stack.Protected>
 
       <Stack.Protected guard={!isLoggedIn}>

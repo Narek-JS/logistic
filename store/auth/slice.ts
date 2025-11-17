@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-type Role = "client" | "driver" | null;
+type Role = "client" | "vendor" | null;
 
 interface AuthState {
   token: string | null;

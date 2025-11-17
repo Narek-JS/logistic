@@ -1,10 +1,10 @@
-// app/(driver)/index.tsx  (Driver Home Screen)
+// app/(vendor)/profile.tsx  (Vendor Profile Screen)
 import { View, Text } from "react-native";
 
-export default function DriverHomeScreen() {
+export default function VendorProfileScreen() {
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Text>Driver Home Screen</Text>
+      <Text>Vendor Profile Screen</Text>
     </View>
   );
 }

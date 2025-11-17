@@ -20,7 +20,7 @@ const WelcomeScreen: React.FC = () => {
     if (type === "client") {
       router.push("/(auth)/register/client/step-1");
     } else if (type === "courier") {
-      router.push("/(auth)/register/driver/step-1");
+      router.push("/(auth)/register/vendor/step-1");
     }
   };
 

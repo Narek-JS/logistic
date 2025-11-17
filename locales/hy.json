@@ -28,8 +28,8 @@
       "codeRequired": "Կոդը պարտադիր է"
     }
   },
-  "driverPhoneVerification": {
-    "title": "Հաճախորդի Հեռախոսի Վավերացում",
+  "vendorPhoneVerification": {
+    "title": "Վաճառողի Հեռախոսի Վավերացում",
     "phoneNumberPlaceholder": "Մուտքագրեք հեռախոսահամարը",
     "sendCodeButton": "Ուղարկել Կոդը",
     "continueWithYoPhone": "Շարունակել YoPhone-ով",

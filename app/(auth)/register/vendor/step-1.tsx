@@ -2,11 +2,11 @@ import { TouchableOpacity, StyleSheet, ScrollView, View } from "react-native";
 import { ButtonPrimary, ButtonSecondary } from "@/components/ui/Buttons";
 import { TermsAndPrivacy } from "@/components/TermsAndPrivacy";
 import { setErrorsFields } from "@/utils/form/errorFields";
+import { usePhoneVendorMutation } from "@/store/auth/api";
 import { showMessage } from "react-native-flash-message";
 import { PhoneNumberInput } from "@/components/shared";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { usePhoneClientMutation } from "@/store/auth/api";
 import { FontAwesome } from "@expo/vector-icons";
 import { YoPhoneIcon } from "@/components/Icons";
 import { Stack, useRouter } from "expo-router";
@@ -20,11 +20,11 @@ const validationSchema = yup.object().shape({
   phone: yup.string().required(),
 });
 
-export default function DriverPhoneStep() {
+export default function VendorPhoneStep() {
   const router = useRouter();
   const { t } = useLocale();
 
-  const [phoneMutation, { isLoading }] = usePhoneClientMutation();
+  const [phoneMutation, { isLoading }] = usePhoneVendorMutation();
 
   const form = useForm({
     resolver: yupResolver(validationSchema),
@@ -48,7 +48,7 @@ export default function DriverPhoneStep() {
           type: "info",
         });
         router.push({
-          pathname: "/(auth)/register/driver/step-2",
+          pathname: "/(auth)/register/vendor/step-2",
           params: { phone },
         });
       } else if ((res.error as any).status === 422) {
@@ -89,7 +89,7 @@ export default function DriverPhoneStep() {
               <FontAwesome name="chevron-left" size={16} />
             </TouchableOpacity>
           ),
-          title: t("driverPhoneVerification.title"),
+          title: t("vendorPhoneVerification.title"),
           headerShown: true,
         }}
       />
@@ -105,7 +105,7 @@ export default function DriverPhoneStep() {
               <PhoneNumberInput
                 onChange={field.onChange}
                 placeholder={t(
-                  "driverPhoneVerification.phoneNumberPlaceholder"
+                  "vendorPhoneVerification.phoneNumberPlaceholder"
                 )}
                 value={field.value}
                 error={fieldState.error?.message || errors.phone?.message}
@@ -119,7 +119,7 @@ export default function DriverPhoneStep() {
             isLoading={isLoading}
             disabled={!isValid}
           >
-            {t("driverPhoneVerification.sendCodeButton")}
+            {t("vendorPhoneVerification.sendCodeButton")}
           </ButtonPrimary>
         </View>
 
@@ -130,7 +130,7 @@ export default function DriverPhoneStep() {
             onPress={handleYoPhone}
           >
             <Text style={{ fontFamily: "open-sans-bold" }}>
-              {t("driverPhoneVerification.continueWithYoPhone")}
+              {t("vendorPhoneVerification.continueWithYoPhone")}
             </Text>
           </ButtonSecondary>
           <TermsAndPrivacy

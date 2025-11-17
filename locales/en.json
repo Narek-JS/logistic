@@ -31,8 +31,8 @@
       "codeRequired": "Code is required"
     }
   },
-  "driverPhoneVerification": {
-    "title": "Driver Phone Verification",
+  "vendorPhoneVerification": {
+    "title": "Vendor Phone Verification",
     "phoneNumberPlaceholder": "Enter phone number",
     "sendCodeButton": "Send Code",
     "continueWithYoPhone": "Continue with YoPhone",

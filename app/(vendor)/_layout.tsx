@@ -1,14 +1,14 @@
-// app/(driver)/_layout.tsx
+// app/(vendor)/_layout.tsx
 import { Tabs } from "expo-router";
 import { FontAwesome } from "@expo/vector-icons";
 
-export default function DriverLayout() {
+export default function VendorLayout() {
   return (
     <Tabs screenOptions={{ tabBarActiveTintColor: "tomato" }}>
       <Tabs.Screen
         name="index"
         options={{
-          title: "Driver Home",
+          title: "Vendor Home",
           tabBarIcon: ({ color }) => (
             <FontAwesome name="home" size={24} color={color} />
           ),

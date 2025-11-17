@@ -1,7 +1,7 @@
 import { View, Text, Button } from "react-native";
 import { useRouter } from "expo-router";
 
-export default function DriverRegStep1() {
+export default function VendorRegStep1() {
   const router = useRouter();
   return (
     <View
@@ -12,10 +12,10 @@ export default function DriverRegStep1() {
         gap: 16,
       }}
     >
-      <Text>Driver Registration — Step 1</Text>
+      <Text>Vendor Registration — Step 1</Text>
       <Button
         title="Back"
-        onPress={() => router.push("/(auth)/register/driver/step-1")}
+        onPress={() => router.push("/(auth)/register/vendor/step-1")}
       />
     </View>
   );

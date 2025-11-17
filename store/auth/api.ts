@@ -13,6 +13,20 @@ import { RTKApi } from "../api";
 
 const extendedApi = RTKApi.injectEndpoints({
   endpoints: (build) => ({
+    phoneVendor: build.mutation<PhoneResponse, PhoneRequest>({
+      query: (props) => ({
+        url: "/vendor/auth/register-phone",
+        method: "POST",
+        body: props,
+      }),
+    }),
+    verifyCodeVendor: build.mutation<VerifyCodeResponse, VerifyCodeRequest>({
+      query: (props) => ({
+        url: "/vendor/auth/verify-phone",
+        method: "POST",
+        body: props,
+      }),
+    }),
     phoneClient: build.mutation<PhoneResponse, PhoneRequest>({
       query: (props) => ({
         url: "/client/auth/register-phone",
@@ -52,8 +66,10 @@ const extendedApi = RTKApi.injectEndpoints({
 });
 
 export const {
+  useVerifyCodeVendorMutation,
   useVerifyCodeClientMutation,
   useRegisterClientMutation,
+  usePhoneVendorMutation,
   usePhoneClientMutation,
   useLoginMutation,
 } = extendedApi;
