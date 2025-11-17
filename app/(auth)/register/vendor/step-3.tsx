@@ -1,6 +1,6 @@
 import { TouchableOpacity, StyleSheet, ScrollView, View } from "react-native";
 import { TermsAndPrivacy } from "@/components/TermsAndPrivacy";
-import { useRegisterClientMutation } from "@/store/auth/api";
+import { useRegisterVendorMutation } from "@/store/auth/api";
 import { setErrorsFields } from "@/utils/form/errorFields";
 import { TextInput } from "@/components/shared/TextInput";
 import { showMessage } from "react-native-flash-message";
@@ -18,59 +18,33 @@ import { IError } from "@/store/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as yup from "yup";
 
-interface PasswordValidation {
-  hasUppercase: boolean;
-  hasLowercase: boolean;
-  minLength: boolean;
-  hasNumber: boolean;
-  hasSymbol: boolean;
-}
-
-const validatePassword = (password: string): PasswordValidation => ({
-  hasSymbol: /[!@#$%^&*(),.?":{}|<>]/.test(password),
-  hasUppercase: /[A-Z]/.test(password),
-  hasLowercase: /[a-z]/.test(password),
-  minLength: password.length >= 12,
-  hasNumber: /\d/.test(password),
-});
-
 const validationSchema = yup.object().shape({
-  email: yup.string().email().required(),
   firstName: yup.string().required(),
   lastName: yup.string().required(),
   password: yup.string().required(),
-  passwordConfirmation: yup
-    .string()
-    .required()
-    .oneOf([yup.ref("password")], "Passwords must match"),
 });
 
-export default function ClientRegStep3() {
+export default function VendorRegStep3() {
   const dispatch = useDispatch();
   const router = useRouter();
   const { t } = useLocale();
-  const [register, { isLoading }] = useRegisterClientMutation();
-
+  const [register, { isLoading }] = useRegisterVendorMutation();
   const form = useForm({
     resolver: yupResolver(validationSchema),
     mode: "onChange",
     defaultValues: {
-      passwordConfirmation: "",
       firstName: "",
       lastName: "",
       password: "",
-      email: "",
     },
   });
 
-  const { handleSubmit, control, watch } = form;
+  const { handleSubmit, control } = form;
 
   const onSubmit = async (data: {
-    passwordConfirmation: string;
     firstName: string;
     password: string;
     lastName: string;
-    email: string;
   }) => {
     try {
       const token = (await AsyncStorage.getItem("ape-ape")) || "";
@@ -82,8 +56,8 @@ export default function ClientRegStep3() {
           type: "info",
         });
 
-        dispatch(setRole({ role: "client" }));
-        router.push("/(client)/profile");
+        dispatch(setRole({ role: "vendor" }));
+        router.push("/(vendor)/profile");
       } else if ((res.error as any).status === 422) {
         const errorResponse = (res.error as any).data;
         setErrorsFields(form, errorResponse as IError);
@@ -103,9 +77,6 @@ export default function ClientRegStep3() {
     }
   };
 
-  const password = watch("password");
-  const passwordValidation = validatePassword(password || "");
-
   return (
     <>
       <Stack.Screen
@@ -121,7 +92,7 @@ export default function ClientRegStep3() {
               <FontAwesome name="chevron-left" size={16} />
             </TouchableOpacity>
           ),
-          title: t("clientRegStep3.title"),
+          title: t("vendorRegStep3.title"),
           headerShown: true,
         }}
       />
@@ -160,80 +131,17 @@ export default function ClientRegStep3() {
 
           <Controller
             control={control}
-            name="email"
-            render={({ field, fieldState }) => (
-              <TextInput
-                label={t("clientRegStep3.emailPlaceholder")}
-                errorText={fieldState.error?.message}
-                onChangeText={field.onChange}
-                keyboardType="email-address"
-                autoCapitalize="none"
-                value={field.value}
-                autoCorrect={false}
-              />
-            )}
-          />
-
-          <Controller
-            control={control}
             name="password"
             render={({ field, fieldState }) => (
-              <>
-                <TextInput
-                  onChangeText={field.onChange}
-                  errorText={fieldState.error?.message}
-                  label={t("clientRegStep3.password")}
-                  secureTextEntry={true}
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  value={field.value}
-                />
-
-                <Controller
-                  control={control}
-                  name="passwordConfirmation"
-                  render={({ field, fieldState }) => (
-                    <TextInput
-                      errorText={fieldState.error?.message}
-                      onChangeText={field.onChange}
-                      label={"Confirm password"}
-                      secureTextEntry={true}
-                      autoCapitalize="none"
-                      autoCorrect={false}
-                      value={field.value}
-                    />
-                  )}
-                />
-
-                {/* Password Validation Requirements */}
-                <View style={styles.validationContainer}>
-                  <Text style={styles.validationTitle}>
-                    {t("clientRegStep3.passwordValidation.title")}
-                  </Text>
-                  <View style={styles.validationList}>
-                    <ValidationItem
-                      text={t("clientRegStep3.passwordValidation.min12")}
-                      isValid={passwordValidation.minLength}
-                    />
-                    <ValidationItem
-                      text={t("clientRegStep3.passwordValidation.uppercase")}
-                      isValid={passwordValidation.hasUppercase}
-                    />
-                    <ValidationItem
-                      text={t("clientRegStep3.passwordValidation.lowercase")}
-                      isValid={passwordValidation.hasLowercase}
-                    />
-                    <ValidationItem
-                      text={t("clientRegStep3.passwordValidation.number")}
-                      isValid={passwordValidation.hasNumber}
-                    />
-                    <ValidationItem
-                      text={t("clientRegStep3.passwordValidation.symbol")}
-                      isValid={passwordValidation.hasSymbol}
-                    />
-                  </View>
-                </View>
-              </>
+              <TextInput
+                errorText={fieldState.error?.message}
+                label={t("clientRegStep3.password")}
+                onChangeText={field.onChange}
+                secureTextEntry={true}
+                autoCapitalize="none"
+                autoCorrect={false}
+                value={field.value}
+              />
             )}
           />
 
@@ -256,24 +164,6 @@ export default function ClientRegStep3() {
     </>
   );
 }
-
-const ValidationItem = (props: { isValid: boolean; text: string }) => (
-  <View style={styles.validationItem}>
-    <FontAwesome
-      color={props.isValid ? "#000000" : Colors.inactiveGray}
-      name="check"
-      size={16}
-    />
-    <Text
-      style={[
-        styles.validationText,
-        props.isValid && styles.validationTextValid,
-      ]}
-    >
-      {props.text}
-    </Text>
-  </View>
-);
 
 const styles = StyleSheet.create({
   container: {

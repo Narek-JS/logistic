@@ -41,7 +41,7 @@ export default function VendorPhoneStep() {
   const onSubmit = async ({ phone }: { phone: string }) => {
     try {
       const res = await phoneMutation({ phone });
-
+      console.log("res --> ", res);
       if (res.data?.message) {
         showMessage({
           message: "A verification code has been sent to your phone",
@@ -56,7 +56,7 @@ export default function VendorPhoneStep() {
         setErrorsFields(form, errorResponse as IError);
       } else {
         const message =
-          (res.error as any).data.message ||
+          (res.error as any)?.data?.message ||
           "Could not send verification code. Please try again.";
 
         showMessage({ message, type: "danger" });

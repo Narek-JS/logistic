@@ -25,11 +25,9 @@ export type VerifyCodeResponse = {
 };
 
 export interface RegisterRequest {
-  passwordConfirmation: string;
   firstName: string;
   lastName: string;
   password: string;
-  email: string;
   token: string;
 }
 export type RegisterResponse = {

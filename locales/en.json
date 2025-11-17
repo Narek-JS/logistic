@@ -70,5 +70,8 @@
       "number": "1 number",
       "symbol": "1 symbol"
     }
+  },
+  "vendorRegStep3": {
+    "title": "Create Vendor account"
   }
 }

@@ -56,7 +56,7 @@ export default function ClientPhoneStep() {
         setErrorsFields(form, errorResponse as IError);
       } else {
         const message =
-          (res.error as any).data.message ||
+          (res.error as any)?.data?.message ||
           "Could not send verification code. Please try again.";
 
         showMessage({ message, type: "danger" });
