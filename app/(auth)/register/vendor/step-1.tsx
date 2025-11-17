@@ -41,7 +41,7 @@ export default function VendorPhoneStep() {
   const onSubmit = async ({ phone }: { phone: string }) => {
     try {
       const res = await phoneMutation({ phone });
-      console.log("res --> ", res);
+
       if (res.data?.message) {
         showMessage({
           message: "A verification code has been sent to your phone",

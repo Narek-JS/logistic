@@ -194,29 +194,6 @@ const styles = StyleSheet.create({
     gap: 4,
     marginTop: 8,
   },
-  validationContainer: {
-    marginTop: 8,
-  },
-  validationTitle: {
-    fontSize: 14,
-    color: "#000000",
-    marginBottom: 8,
-  },
-  validationList: {
-    gap: 8,
-  },
-  validationItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-  validationText: {
-    fontSize: 14,
-    color: Colors.inactiveGray,
-  },
-  validationTextValid: {
-    color: "#000000",
-  },
   createButton: {
     marginTop: 8,
   },
