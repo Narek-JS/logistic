@@ -56,9 +56,7 @@ export default function VendorRegStep3() {
       const token = (await AsyncStorage.getItem("ape-ape")) || "";
       const res = await register({ ...data, token });
 
-      console.log("register res --> ", res);
-
-      if (res.data?.token) {
+      if (res.data?.data?.token) {
         showMessage({
           message: "Account created successfully",
           type: "info",

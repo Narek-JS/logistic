@@ -76,7 +76,7 @@ export default function ClientRegStep3() {
       const token = (await AsyncStorage.getItem("ape-ape")) || "";
       const res = await register({ ...data, token });
 
-      if (res.data?.token) {
+      if (res.data?.data?.token) {
         showMessage({
           message: "Account created successfully",
           type: "info",

@@ -42,7 +42,7 @@ export default function ClientPhoneStep() {
     try {
       const res = await phoneMutation({ phone });
 
-      if (res.data?.message) {
+      if (res.data?.data?.message) {
         showMessage({
           message: "A verification code has been sent to your phone",
           type: "info",

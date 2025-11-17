@@ -31,28 +31,37 @@ const extendedApi = RTKApi.injectEndpoints({
         body: props,
       }),
     }),
-    registerVendor: build.mutation<RegisterResponse, RegisterRequest>({
+    registerVendor: build.mutation<
+      ApiResponse<RegisterResponse>,
+      RegisterRequest
+    >({
       query: (props) => ({
         url: "/vendor/auth/register",
         method: "POST",
         body: props,
       }),
     }),
-    phoneClient: build.mutation<PhoneResponse, PhoneRequest>({
+    phoneClient: build.mutation<ApiResponse<PhoneResponse>, PhoneRequest>({
       query: (props) => ({
         url: "/client/auth/register-phone",
         method: "POST",
         body: props,
       }),
     }),
-    verifyCodeClient: build.mutation<VerifyCodeResponse, VerifyCodeRequest>({
+    verifyCodeClient: build.mutation<
+      ApiResponse<VerifyCodeResponse>,
+      VerifyCodeRequest
+    >({
       query: (props) => ({
         url: "/client/auth/verify-phone",
         method: "POST",
         body: props,
       }),
     }),
-    registerClient: build.mutation<RegisterResponse, RegisterRequest>({
+    registerClient: build.mutation<
+      ApiResponse<RegisterResponse>,
+      RegisterRequest
+    >({
       query: (props) => ({
         url: "/client/auth/register",
         method: "POST",

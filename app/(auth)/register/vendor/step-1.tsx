@@ -42,8 +42,6 @@ export default function VendorPhoneStep() {
     try {
       const res = await phoneMutation({ phone });
 
-      console.log("phone res --> ", res);
-
       if (res.data?.data?.message) {
         showMessage({
           message: "A verification code has been sent to your phone",
