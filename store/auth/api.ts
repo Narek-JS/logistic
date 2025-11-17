@@ -13,21 +13,21 @@ import { RTKApi } from "../api";
 
 const extendedApi = RTKApi.injectEndpoints({
   endpoints: (build) => ({
-    phone: build.mutation<PhoneResponse, PhoneRequest>({
+    phoneClient: build.mutation<PhoneResponse, PhoneRequest>({
       query: (props) => ({
         url: "/client/auth/register-phone",
         method: "POST",
         body: props,
       }),
     }),
-    verifyCode: build.mutation<VerifyCodeResponse, VerifyCodeRequest>({
+    verifyCodeClient: build.mutation<VerifyCodeResponse, VerifyCodeRequest>({
       query: (props) => ({
         url: "/client/auth/verify-phone",
         method: "POST",
         body: props,
       }),
     }),
-    register: build.mutation<RegisterResponse, RegisterRequest>({
+    registerClient: build.mutation<RegisterResponse, RegisterRequest>({
       query: (props) => ({
         url: "/client/auth/register",
         method: "POST",
@@ -48,27 +48,14 @@ const extendedApi = RTKApi.injectEndpoints({
         }
       },
     }),
-
-    // register: build.mutation<RegisterResponse, RegisterRequest>({
-    //   query: (props) => ({
-    //     url: "/auth/register",
-    //     method: "POST",
-    //     body: props,
-    //   }),
-    //   async onQueryStarted(_queryArgument, mutationLifeCycleApi) {
-    //     const response = await mutationLifeCycleApi.queryFulfilled;
-    //     const token = response.data.access_token;
-    //     mutationLifeCycleApi.dispatch(setAccessToken({ token }));
-    //   },
-    // }),
   }),
 });
 
 export const {
-  useVerifyCodeMutation,
-  useRegisterMutation,
+  useVerifyCodeClientMutation,
+  useRegisterClientMutation,
+  usePhoneClientMutation,
   useLoginMutation,
-  usePhoneMutation,
 } = extendedApi;
 
 export default extendedApi;

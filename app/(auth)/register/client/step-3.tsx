@@ -1,10 +1,10 @@
 import { TouchableOpacity, StyleSheet, ScrollView, View } from "react-native";
 import { TermsAndPrivacy } from "@/components/TermsAndPrivacy";
+import { useRegisterClientMutation } from "@/store/auth/api";
 import { setErrorsFields } from "@/utils/form/errorFields";
 import { TextInput } from "@/components/shared/TextInput";
 import { showMessage } from "react-native-flash-message";
 import { ButtonPrimary } from "@/components/ui/Buttons";
-import { useRegisterMutation } from "@/store/auth/api";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FontAwesome } from "@expo/vector-icons";
@@ -49,7 +49,7 @@ export default function ClientRegStep3() {
   const dispatch = useDispatch();
   const router = useRouter();
   const { t } = useLocale();
-  const [register, { isLoading }] = useRegisterMutation();
+  const [register, { isLoading }] = useRegisterClientMutation();
 
   const form = useForm({
     resolver: yupResolver(validationSchema),

@@ -31,6 +31,21 @@
       "codeRequired": "Code is required"
     }
   },
+  "driverPhoneVerification": {
+    "title": "Driver Phone Verification",
+    "phoneNumberPlaceholder": "Enter phone number",
+    "sendCodeButton": "Send Code",
+    "continueWithYoPhone": "Continue with YoPhone",
+    "phoneNumberRequired": "Phone number is required",
+    "phoneNumberInvalid": "Please enter a valid phone number",
+    "verificationCode": {
+      "instruction": "Enter the code we sent to your phone. It's valid for 2 minutes.",
+      "verifyButton": "Verify",
+      "resendCode": "Resend Code",
+      "invalidCode": "Invalid code.",
+      "codeRequired": "Code is required"
+    }
+  },
   "clientRegStep3": {
     "title": "Create Client account",
     "firstName": "First Name",

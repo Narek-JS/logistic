@@ -8,9 +8,9 @@ import { TouchableOpacity, StyleSheet, ScrollView, View } from "react-native";
 import { ButtonPrimary, ButtonSecondary } from "@/components/ui/Buttons";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { TermsAndPrivacy } from "@/components/TermsAndPrivacy";
+import { useVerifyCodeClientMutation } from "@/store/auth/api";
 import { setErrorsFields } from "@/utils/form/errorFields";
 import { showMessage } from "react-native-flash-message";
-import { useVerifyCodeMutation } from "@/store/auth/api";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FontAwesome } from "@expo/vector-icons";
@@ -37,7 +37,7 @@ export default function ClientRegStep2() {
   const { phone } = useLocalSearchParams();
   const { t } = useLocale();
 
-  const [verifyCode, { isLoading }] = useVerifyCodeMutation();
+  const [verifyCode, { isLoading }] = useVerifyCodeClientMutation();
 
   const form = useForm({
     resolver: yupResolver(validationSchema),

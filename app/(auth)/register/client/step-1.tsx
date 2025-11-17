@@ -2,11 +2,11 @@ import { TouchableOpacity, StyleSheet, ScrollView, View } from "react-native";
 import { ButtonPrimary, ButtonSecondary } from "@/components/ui/Buttons";
 import { TermsAndPrivacy } from "@/components/TermsAndPrivacy";
 import { setErrorsFields } from "@/utils/form/errorFields";
+import { usePhoneClientMutation } from "@/store/auth/api";
 import { showMessage } from "react-native-flash-message";
 import { PhoneNumberInput } from "@/components/shared";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { usePhoneMutation } from "@/store/auth/api";
 import { FontAwesome } from "@expo/vector-icons";
 import { YoPhoneIcon } from "@/components/Icons";
 import { Stack, useRouter } from "expo-router";
@@ -24,7 +24,7 @@ export default function ClientPhoneStep() {
   const router = useRouter();
   const { t } = useLocale();
 
-  const [phoneMutation, { isLoading }] = usePhoneMutation();
+  const [phoneMutation, { isLoading }] = usePhoneClientMutation();
 
   const form = useForm({
     resolver: yupResolver(validationSchema),
